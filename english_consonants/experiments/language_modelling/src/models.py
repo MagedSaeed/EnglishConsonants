@@ -3,7 +3,7 @@ import torch.nn.functional as F
 from pytorch_lightning import LightningModule
 from torch import nn
 
-from dotless_arabic.experiments.nlms.src import constants
+from english_consonants.experiments.language_modelling.src import constants
 
 
 class LitNeuralLanguageModel(LightningModule):
@@ -19,7 +19,6 @@ class LitNeuralLanguageModel(LightningModule):
         learning_rate=constants.LEARNING_RATE,
         embedding_size=constants.EMBEDDING_SIZE,
     ):
-
         super().__init__()
         self.save_hyperparameters()
 
@@ -148,7 +147,7 @@ class LitNeuralLanguageModel(LightningModule):
     def validation_step(self, batch, batch_idx):
         loss = self._get_loss(batch)
         self.log("val_loss", loss, prog_bar=True)
-        return {'val_loss':loss}
+        return {"val_loss": loss}
 
     def configure_optimizers(self):
         optimizer = torch.optim.Adam(

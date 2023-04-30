@@ -17,13 +17,12 @@ from pytorch_lightning.callbacks import (
 
 from torch.utils.data import DataLoader
 from tqdm.auto import tqdm
-from farasa.segmenter import FarasaSegmenter
+from english_consonants.experiments.language_modelling.src import constants
 
 import wandb
 
-from dotless_arabic.processing import undot
-from dotless_arabic.experiments.nlms.src import constants, datasets
-from dotless_arabic.tokenizers import FarasaMorphologicalTokenizer, WordTokenizer
+from english_consonants.experiments.language_modelling.src import datasets
+from english_consonants.tokenizers import WordTokenizer
 
 
 def generate_text(
@@ -89,7 +88,7 @@ def generate_text(
 
 def train_lm(
     lm_model,
-    dataset_id,
+    dataset_name,
     wandb_logger,
     vocab_coverage,
     tokenizer_class,
@@ -103,7 +102,7 @@ def train_lm(
     max_epochs=constants.MAX_EPOCHS,
 ):
     # remove any previous checkpoints
-    checkpoints_path = Path(f"NLMs/{dataset_id}/{tokenizer_class.__name__}")
+    checkpoints_path = Path(f"EnglishNLMs/{dataset_name}/{tokenizer_class.__name__}")
     shutil.rmtree(checkpoints_path, ignore_errors=True)
     checkpoint_callback = ModelCheckpoint(
         mode="min",
@@ -114,7 +113,7 @@ def train_lm(
         save_weights_only=False,
         auto_insert_metric_name=True,
         save_on_train_epoch_end=False,
-        dirpath=f"NLMs/{dataset_id}/{tokenizer_class.__name__}/checkpoints",
+        dirpath=f"EnglishNLMs/{dataset_name}/{tokenizer_class.__name__}/checkpoints",
         filename="{epoch}-{val_loss:.3f}-{step}" + f"-{vocab_coverage}",
     )
     callbacks.append(checkpoint_callback)
@@ -166,7 +165,6 @@ def calculate_perplexity(
     tokenizer,
     sequence_length,
     use_tqdm=True,
-    undot_text=False,
     device=constants.DEVICE,
     batch_size=constants.DEFAULT_BATCH_SIZE,
     ignore_oovs=False,
@@ -176,7 +174,6 @@ def calculate_perplexity(
     lm_dataset = datasets.LanguageModelDataset(
         dataset=dataset,
         tokenizer=tokenizer,
-        undot_text=undot_text,
         sequence_length=sequence_length,
     )
     dataloader = DataLoader(
@@ -213,21 +210,13 @@ def calculate_perplexity(
 def get_tokenizer(
     train_dataset,
     vocab_size,
-    undot_text=False,
     tokenizer_class=constants.DEFAULT_TOKENIZER_CLASS,
 ):
-    if undot_text:
-        with open("tmp_dataset.txt", "w") as f:
-            f.write("\n".join(undot(item) for item in train_dataset if item.strip()))
-    else:
-        with open("tmp_dataset.txt", "w") as f:
-            f.write("\n".join(item for item in train_dataset if item.strip()))
-
     tokenizer = tokenizer_class(
         vocab_size=vocab_size,
         special_tokens=["<bos>", "<eos>"],
     )
-    tokenizer.train("tmp_dataset.txt")
+    tokenizer.train(text="\n".join(item for item in train_dataset if item.strip()))
     return tokenizer
 
 
@@ -237,14 +226,12 @@ def get_dataloader(
     sequence_length,
     shuffle=False,
     drop_last=True,
-    undot_text=False,
     workers=constants.CPU_COUNT,
     batch_size=constants.DEFAULT_BATCH_SIZE,
 ):
     lm_dataset = datasets.LanguageModelDataset(
         dataset=dataset,
         tokenizer=tokenizer,
-        undot_text=undot_text,
         sequence_length=sequence_length,
     )
     dataloader = DataLoader(
@@ -258,41 +245,18 @@ def get_dataloader(
     return dataloader
 
 
-# def get_vocab_size(dataset, freq_threshold=3):
-#     words_frequencies = defaultdict(int)
-#     for document in dataset:
-#         for word in document.split():
-#             words_frequencies[word] += 1
-#     return len([word for word, freq in words_frequencies.items() if freq >= freq_threshold])
-
-
 def get_vocab_size(
     dataset,
     use_tqdm=True,
-    undot_text=False,
     return_all_vocab=True,
     tokenizer_class=WordTokenizer,
     vocab_coverage=constants.DEFAULT_VOCAB_COVERAGE,
 ):
     tokens_frequencies = defaultdict(int)
-    if tokenizer_class == FarasaMorphologicalTokenizer:
-        segmenter = FarasaSegmenter(interactive=True)
     dataset = tqdm(dataset) if use_tqdm else dataset
     for document in dataset:
-        if tokenizer_class == FarasaMorphologicalTokenizer:
-            for token in tokenizer_class.split_text(
-                document,
-                segmenter=segmenter,
-                undot_text=undot_text,
-            ):
-                tokens_frequencies[token] += 1
-        else:
-            for token in tokenizer_class.split_text(
-                document,
-                undot_text=undot_text,
-            ):
-                # print(tokenizer_class.split_text(document))
-                tokens_frequencies[token] += 1
+        for token in tokenizer_class.split_text(document):
+            tokens_frequencies[token] += 1
 
     sorted_words_frequencies = dict(
         sorted(
@@ -303,12 +267,6 @@ def get_vocab_size(
     )
     current_words_count = 0
     vocab = 0
-    # from pprint import pprint
-
-    # pprint(
-    #     sorted_words_frequencies,
-    #     sort_dicts=False,
-    # )
     all_words_counts = sum(sorted_words_frequencies.values())
     for token, counts in sorted_words_frequencies.items():
         current_words_count += counts
@@ -321,9 +279,13 @@ def get_vocab_size(
     return vocab
 
 
-def get_best_checkpoint(dataset_id, tokenizer_class, checkpoints_base_path="NLMs"):
+def get_best_checkpoint(
+    dataset_name,
+    tokenizer_class,
+    checkpoints_base_path="EnglishNLMs",
+):
     checkpoints_path = (
-        f"{checkpoints_base_path}/{dataset_id}/{tokenizer_class.__name__}/checkpoints"
+        f"{checkpoints_base_path}/{dataset_name}/{tokenizer_class.__name__}/checkpoints"
     )
     for file_name in os.listdir(checkpoints_path):
         if file_name.startswith("epoch"):

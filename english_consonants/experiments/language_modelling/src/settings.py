@@ -3,7 +3,7 @@ import os
 from pytorch_lightning import seed_everything
 
 import wandb
-from dotless_arabic.experiments.nlms.src import constants
+from english_consonants.experiments.language_modelling.src import constants
 
 
 def configure_environment():
