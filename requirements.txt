@@ -1,0 +1,6 @@
+pytorch-lightning==2.0.2
+scikit-learn==1.2.2
+wandb==0.15.0
+datasets==2.12.0
+rich==13.3.5
+git+https://github.com/MagedSaeed/tkseem.git
