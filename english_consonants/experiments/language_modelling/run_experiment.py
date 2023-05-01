@@ -7,7 +7,7 @@ if "." not in sys.path:
     sys.path.append(".")
 
 
-from english_consonants.processing import process_english, strip_vowels
+from english_consonants.processing import process_english, mask_vowels
 from english_consonants.experiments.language_modelling.src import constants
 from english_consonants.experiments.language_modelling.src.training_pipeline import (
     training_pipeline,
@@ -67,22 +67,23 @@ def run(
 
     def prepare_example(example):
         example["processed_text"] = process_english(example["text"])
-        example["consonants"] = strip_vowels(example["processed_text"])
+        example["consonants"] = mask_vowels(example["processed_text"])
+        example["masked_consonants"] = mask_vowels(example["processed_text"], mask="a")
         return example
 
     dataset["train"] = (
         dataset["train"]
-        .filter(lambda example: len(example["text"].split()) > 20)
+        .filter(lambda example: len(example["text"].split()) > 10)
         .map(prepare_example)
     )
     dataset["validation"] = (
         dataset["validation"]
-        .filter(lambda example: len(example["text"].split()) > 20)
+        .filter(lambda example: len(example["text"].split()) > 10)
         .map(prepare_example)
     )
     dataset["test"] = (
         dataset["test"]
-        .filter(lambda example: len(example["text"].split()) > 20)
+        .filter(lambda example: len(example["text"].split()) > 10)
         .map(prepare_example)
     )
 
@@ -94,22 +95,20 @@ def run(
         f"""
         Some of the Dataset Samples before training:
         {constants.NEW_LINE.join(train_dataset[:5])}
-        """,
+        """.strip(),
     )
 
-    dataset_name = f"all-{dataset_name}-characters".upper()
-
     training_pipeline(
-        val_dataset=val_dataset,
-        test_dataset=test_dataset,
-        train_dataset=train_dataset,
         batch_size=batch_size,
         gpu_devices=gpu_devices,
         cpu_devices=cpu_devices,
-        dataset_name=dataset_name,
+        val_dataset=val_dataset,
+        test_dataset=test_dataset,
+        train_dataset=train_dataset,
         vocab_coverage=vocab_coverage,
         tokenizer_class=tokenizer_class,
         sequence_length=sequence_length,
+        dataset_name=f"all-{dataset_name}-chars",
         sequence_length_percentile=sequence_length_percentile,
     )
 
@@ -117,27 +116,50 @@ def run(
     consonants_val_dataset = list(dataset["validation"]["consonants"])
     consonants_test_dataset = list(dataset["test"]["consonants"])
 
-    dataset_name = f"consonants-{dataset_name}-characters"
-
     print(
         f"""
-        Some of the Dataset Samples after undotting:
+        Some of the Dataset Samples after deleting vowels:
         {constants.NEW_LINE.join(consonants_train_dataset[:5])}
-        """,
+        """.strip(),
     )
 
     training_pipeline(
         batch_size=batch_size,
         gpu_devices=gpu_devices,
         cpu_devices=cpu_devices,
-        dataset_name=dataset_name,
         vocab_coverage=vocab_coverage,
         tokenizer_class=tokenizer_class,
         sequence_length=sequence_length,
         val_dataset=consonants_val_dataset,
         test_dataset=consonants_test_dataset,
         train_dataset=consonants_train_dataset,
+        dataset_name=f"consonants-{dataset_name}-chars",
         sequence_length_percentile=sequence_length_percentile,
+    )
+
+    masked_consonants_train_dataset = list(dataset["train"]["masked_consonants"])
+    masked_consonants_val_dataset = list(dataset["validation"]["masked_consonants"])
+    masked_consonants_test_dataset = list(dataset["test"]["masked_consonants"])
+
+    print(
+        f"""
+        Some of the Dataset Samples after masking:
+        {constants.NEW_LINE.join(consonants_train_dataset[:5])}
+        """.strip(),
+    )
+
+    training_pipeline(
+        batch_size=batch_size,
+        gpu_devices=gpu_devices,
+        cpu_devices=cpu_devices,
+        vocab_coverage=vocab_coverage,
+        tokenizer_class=tokenizer_class,
+        sequence_length=sequence_length,
+        val_dataset=masked_consonants_val_dataset,
+        test_dataset=masked_consonants_test_dataset,
+        train_dataset=masked_consonants_train_dataset,
+        sequence_length_percentile=sequence_length_percentile,
+        dataset_name=f"masked-consonants-{dataset_name}-chars",
     )
 
 

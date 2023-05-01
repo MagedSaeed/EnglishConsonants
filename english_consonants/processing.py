@@ -3,6 +3,7 @@ import string
 
 ENGLISH_LETTERS = string.ascii_lowercase
 
+
 def process_english(text):
     # add spaces between punctuations, if there is not
     text = text.lower()
@@ -23,6 +24,11 @@ def process_english(text):
     return text.strip()
 
 
-def strip_vowels(text):
-    text_with_no_vowels = re.sub(r'[AEIOU]','',text,flags=re.IGNORECASE)
+def mask_vowels(text, mask=""):
+    text_with_no_vowels = re.sub(
+        r"[AEIOU]",
+        mask,
+        text,
+        flags=re.IGNORECASE,
+    )
     return text_with_no_vowels
