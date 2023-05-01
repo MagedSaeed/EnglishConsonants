@@ -141,6 +141,7 @@ class LitNeuralLanguageModel(LightningModule):
             loss,
             on_step=True,
             on_epoch=False,
+            prog_bar=True,
         )
         return loss
 

@@ -6,7 +6,7 @@ from english_consonants.tokenizers import TOKENIZERS_MAP, WordTokenizer
 NUM_LAYERS = 4  # for GRU
 
 MAX_EPOCHS = 50
-DEFAULT_BATCH_SIZE = 128
+DEFAULT_BATCH_SIZE = 64
 HIDDEN_SIZE = 512
 DROPOUT_PROB = 0.333
 EMBEDDING_SIZE = 512
