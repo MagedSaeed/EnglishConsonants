@@ -50,13 +50,13 @@ def training_pipeline(
         Train Samples: {len(train_dataset):,}
         Val Samples: {len(val_dataset):,}
         Test Samples: {len(test_dataset):,}
-        """,
+        """.strip(),
     )
 
     print(
         f"""
         Calculating vocab size using WordTokenizer:
-        """,
+        """.strip(),
     )
 
     vocab_size, all_vocab = get_vocab_size(
@@ -73,7 +73,7 @@ def training_pipeline(
         f"""
         Considered Vocab (from WordTokenizer): {vocab_size:,}
         All Vocab (WordTokenizer): {all_vocab:,}
-        """,
+        """.strip(),
     )
     tokenizer = get_tokenizer(
         vocab_size=vocab_size,
@@ -83,12 +83,12 @@ def training_pipeline(
     print(
         f"""
         Tokenizer Vocab Size: {tokenizer.vocab_size:,}
-        """,
+        """.strip(),
     )
     print(
         f"""
         Calculating Sequence Length:
-        """,
+        """.strip(),
     )
     if sequence_length is None:
         sequence_length = get_sequence_length(
@@ -103,12 +103,12 @@ def training_pipeline(
     print(
         f"""
         Sequence Length: {sequence_length:,}
-        """,
+        """.strip(),
     )
     print(
         f"""
         Building DataLoaders
-        """,
+        """.strip(),
     )
     train_dataloader = get_dataloader(
         shuffle=True,
@@ -138,7 +138,7 @@ def training_pipeline(
         Train DataLoader: {len(train_dataloader):,}
         Val DataLoader: {len(val_dataloader):,}
         Test DataLoader: {len(test_dataloader):,}
-        """,
+        """.strip(),
     )
 
     timer_callback = Timer()
@@ -148,7 +148,7 @@ def training_pipeline(
     print(
         f"""
         {ModelSummary(lm_model)}
-        """,
+        """.strip(),
     )
 
     wandb_logger = WandbLogger(
@@ -205,7 +205,7 @@ def training_pipeline(
         Training Perplexity: {training_perplexity}
         Perplexity with OOVs: {perplexity_with_oovs}
         Perplexity without OOVs: {perplexity_without_oovs:,}
-        """,
+        """.strip(),
     )
 
     training_oov_rate = get_oovs_rate(dataloader=train_dataloader)
@@ -217,7 +217,7 @@ def training_pipeline(
         Training OOVs rate: {training_oov_rate}
         Validation OOVs rate: {val_oov_rate}
         Test OOVs rate: {test_oov_rate}
-        """,
+        """.strip(),
     )
 
     f'{timer_callback.time_elapsed("train"):.2f} seconds'
@@ -225,7 +225,7 @@ def training_pipeline(
     print(
         f"""
         Training Time: {f'{timer_callback.time_elapsed("train"):.2f} seconds'}
-        """,
+        """.strip(),
     )
 
     prompt = "<bos> "
