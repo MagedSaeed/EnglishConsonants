@@ -119,8 +119,8 @@ def train_lm(
     callbacks.append(checkpoint_callback)
     early_stopping_callback = EarlyStopping(
         monitor="val_loss",
-        min_delta=0.025,
-        patience=10,
+        min_delta=0.0125,
+        patience=20,
         check_finite=True,
     )
     callbacks.append(early_stopping_callback)
@@ -137,7 +137,7 @@ def train_lm(
         deterministic=True,
         callbacks=callbacks,
         logger=wandb_logger,
-        gradient_clip_val=1,
+        gradient_clip_val=0.25,
         fast_dev_run=one_run,
         max_epochs=max_epochs,
         val_check_interval=0.5,
@@ -193,7 +193,7 @@ def calculate_perplexity(
             inputs, outputs = batch
             inputs = inputs.to(device)
             outputs = outputs.to(device)
-            batch_loss = lm_model._get_loss(
+            batch_loss = lm_model.step(
                 (inputs, outputs),
                 ignore_oovs=ignore_oovs,
                 loss_reduction="none",

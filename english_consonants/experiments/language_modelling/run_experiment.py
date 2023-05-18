@@ -7,7 +7,12 @@ if "." not in sys.path:
     sys.path.append(".")
 
 
-from english_consonants.processing import process_english, mask_vowels
+from english_consonants.processing import (
+    process_english,
+    mask_vowels,
+    tokens_frequency,
+    calculate_entropy,
+)
 from english_consonants.experiments.language_modelling.src import constants
 from english_consonants.experiments.language_modelling.src.training_pipeline import (
     training_pipeline,
@@ -63,7 +68,7 @@ def run(
     gpu_devices = list(map(int, gpu_devices.split(",")))
 
     dataset_name = "wikitext"
-    dataset = datasets.load_dataset("wikitext", "wikitext-2-raw-v1")
+    dataset = datasets.load_dataset("wikitext", "wikitext-2-v1")
 
     def prepare_example(example):
         example["processed_text"] = process_english(example["text"])
@@ -73,23 +78,29 @@ def run(
 
     dataset["train"] = (
         dataset["train"]
-        .filter(lambda example: len(example["text"].split()) > 10)
+        # .filter(lambda example: len(example["text"].split()) > 10)
         .map(prepare_example)
     )
     dataset["validation"] = (
         dataset["validation"]
-        .filter(lambda example: len(example["text"].split()) > 10)
+        # .filter(lambda example: len(example["text"].split()) > 10)
         .map(prepare_example)
     )
     dataset["test"] = (
         dataset["test"]
-        .filter(lambda example: len(example["text"].split()) > 10)
+        # .filter(lambda example: len(example["text"].split()) > 10)
         .map(prepare_example)
     )
 
     train_dataset = list(dataset["train"]["processed_text"])
     val_dataset = list(dataset["validation"]["processed_text"])
     test_dataset = list(dataset["test"]["processed_text"])
+
+    train_tokens_frequency = tokens_frequency(dataset=tuple(train_dataset))
+    print(f"number of train vocabs: {len(train_tokens_frequency):,}")
+    print(f"number of train tokens: {sum(train_tokens_frequency.values()):,}")
+    train_entropy = calculate_entropy(tokens_frequency=train_tokens_frequency)
+    print(f"train_entropy: {train_entropy:,}")
 
     print(
         f"""
@@ -112,9 +123,21 @@ def run(
         sequence_length_percentile=sequence_length_percentile,
     )
 
+    print("training on consonants english")
+
     consonants_train_dataset = list(dataset["train"]["consonants"])
     consonants_val_dataset = list(dataset["validation"]["consonants"])
     consonants_test_dataset = list(dataset["test"]["consonants"])
+
+    consonants_train_tokens_frequency = tokens_frequency(
+        dataset=tuple(consonants_train_dataset)
+    )
+    print(f"number of train vocabs: {len(consonants_train_tokens_frequency)}")
+    print(f"number of train tokens: {sum(consonants_train_tokens_frequency.values())}")
+    consonants_train_entropy = calculate_entropy(
+        tokens_frequency=consonants_train_tokens_frequency
+    )
+    print(f"train_entropy: {consonants_train_entropy}")
 
     print(
         f"""
@@ -137,14 +160,28 @@ def run(
         sequence_length_percentile=sequence_length_percentile,
     )
 
+    print("training on masked consonants english")
+
     masked_consonants_train_dataset = list(dataset["train"]["masked_consonants"])
     masked_consonants_val_dataset = list(dataset["validation"]["masked_consonants"])
     masked_consonants_test_dataset = list(dataset["test"]["masked_consonants"])
 
+    masked_consonants_train_tokens_frequency = tokens_frequency(
+        dataset=tuple(masked_consonants_train_dataset)
+    )
+    print(f"number of train vocabs: {len(masked_consonants_train_tokens_frequency)}")
+    print(
+        f"number of train tokens: {sum(masked_consonants_train_tokens_frequency.values())}"
+    )
+    masked_consonants_train_entropy = calculate_entropy(
+        tokens_frequency=masked_consonants_train_tokens_frequency
+    )
+    print(f"train_entropy: {masked_consonants_train_entropy}")
+
     print(
         f"""
         Some of the Dataset Samples after masking:
-        {constants.NEW_LINE.join(consonants_train_dataset[:5])}
+        {constants.NEW_LINE.join(masked_consonants_train_dataset[:5])}
         """.strip(),
     )
 
