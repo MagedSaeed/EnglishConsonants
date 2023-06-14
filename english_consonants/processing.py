@@ -49,6 +49,18 @@ def tokens_frequency(dataset, use_tqdm=True):
     return frequencies
 
 
+@lru_cache()
+def characters_frequency(dataset, use_tqdm=True):
+    frequencies = defaultdict(int)
+    dataset = tqdm(dataset) if use_tqdm else dataset
+    for document in dataset:
+        for token in document.split():
+            for character in token:
+                frequencies[character] += 1
+    frequencies = dict(frequencies)
+    return frequencies
+
+
 def calculate_entropy(tokens_frequency):
     # https://stackoverflow.com/q/43419803/4412324
     # https://stackoverflow.com/a/40496783/4412324

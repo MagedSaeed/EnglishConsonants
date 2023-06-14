@@ -8,6 +8,7 @@ if "." not in sys.path:
 
 
 from english_consonants.processing import (
+    characters_frequency,
     process_english,
     mask_vowels,
     tokens_frequency,
@@ -97,10 +98,24 @@ def run(
     test_dataset = list(dataset["test"]["processed_text"])
 
     train_tokens_frequency = tokens_frequency(dataset=tuple(train_dataset))
+
+    train_characters_frequency = characters_frequency(dataset=tuple(train_dataset))
+
     print(f"number of train vocabs: {len(train_tokens_frequency):,}")
     print(f"number of train tokens: {sum(train_tokens_frequency.values()):,}")
-    train_entropy = calculate_entropy(tokens_frequency=train_tokens_frequency)
-    print(f"train_entropy: {train_entropy:,}")
+
+    print(f"number of train unique characters: {len(train_characters_frequency):,}")
+    print(
+        f"number of train all characters: {sum(train_characters_frequency.values()):,}"
+    )
+
+    train_words_entropy = calculate_entropy(tokens_frequency=train_tokens_frequency)
+    train_characters_entropy = calculate_entropy(
+        tokens_frequency=train_characters_frequency
+    )
+
+    print(f"train words entropy: {train_words_entropy:,}")
+    print(f"train chars entropy: {train_characters_entropy:,}")
 
     print(
         f"""
@@ -109,19 +124,19 @@ def run(
         """.strip(),
     )
 
-    training_pipeline(
-        batch_size=batch_size,
-        gpu_devices=gpu_devices,
-        cpu_devices=cpu_devices,
-        val_dataset=val_dataset,
-        test_dataset=test_dataset,
-        train_dataset=train_dataset,
-        vocab_coverage=vocab_coverage,
-        tokenizer_class=tokenizer_class,
-        sequence_length=sequence_length,
-        dataset_name=f"all-{dataset_name}-chars",
-        sequence_length_percentile=sequence_length_percentile,
-    )
+    # training_pipeline(
+    #     batch_size=batch_size,
+    #     gpu_devices=gpu_devices,
+    #     cpu_devices=cpu_devices,
+    #     val_dataset=val_dataset,
+    #     test_dataset=test_dataset,
+    #     train_dataset=train_dataset,
+    #     vocab_coverage=vocab_coverage,
+    #     tokenizer_class=tokenizer_class,
+    #     sequence_length=sequence_length,
+    #     dataset_name=f"all-{dataset_name}-chars",
+    #     sequence_length_percentile=sequence_length_percentile,
+    # )
 
     print("training on consonants english")
 
@@ -132,12 +147,34 @@ def run(
     consonants_train_tokens_frequency = tokens_frequency(
         dataset=tuple(consonants_train_dataset)
     )
-    print(f"number of train vocabs: {len(consonants_train_tokens_frequency)}")
-    print(f"number of train tokens: {sum(consonants_train_tokens_frequency.values())}")
-    consonants_train_entropy = calculate_entropy(
+
+    consonants_train_characters_frequency = characters_frequency(
+        dataset=tuple(consonants_train_dataset)
+    )
+
+    print(
+        f"number of consonants train vocabs: {len(consonants_train_tokens_frequency):,}"
+    )
+    print(
+        f"number of consonants train tokens: {sum(consonants_train_tokens_frequency.values()):,}"
+    )
+
+    print(
+        f"number of consonants train unique characters: {len(consonants_train_characters_frequency):,}"
+    )
+    print(
+        f"number of consonants train all characters: {sum(consonants_train_characters_frequency.values()):,}"
+    )
+
+    consonants_train_words_entropy = calculate_entropy(
         tokens_frequency=consonants_train_tokens_frequency
     )
-    print(f"train_entropy: {consonants_train_entropy}")
+    consonants_train_characters_entropy = calculate_entropy(
+        tokens_frequency=consonants_train_characters_frequency
+    )
+
+    print(f"train consonants words entropy: {consonants_train_words_entropy:,}")
+    print(f"train consonants chars entropy: {consonants_train_characters_entropy:,}")
 
     print(
         f"""
@@ -146,19 +183,19 @@ def run(
         """.strip(),
     )
 
-    training_pipeline(
-        batch_size=batch_size,
-        gpu_devices=gpu_devices,
-        cpu_devices=cpu_devices,
-        vocab_coverage=vocab_coverage,
-        tokenizer_class=tokenizer_class,
-        sequence_length=sequence_length,
-        val_dataset=consonants_val_dataset,
-        test_dataset=consonants_test_dataset,
-        train_dataset=consonants_train_dataset,
-        dataset_name=f"consonants-{dataset_name}-chars",
-        sequence_length_percentile=sequence_length_percentile,
-    )
+    # training_pipeline(
+    #     batch_size=batch_size,
+    #     gpu_devices=gpu_devices,
+    #     cpu_devices=cpu_devices,
+    #     vocab_coverage=vocab_coverage,
+    #     tokenizer_class=tokenizer_class,
+    #     sequence_length=sequence_length,
+    #     val_dataset=consonants_val_dataset,
+    #     test_dataset=consonants_test_dataset,
+    #     train_dataset=consonants_train_dataset,
+    #     dataset_name=f"consonants-{dataset_name}-chars",
+    #     sequence_length_percentile=sequence_length_percentile,
+    # )
 
     print("training on masked consonants english")
 
@@ -169,14 +206,38 @@ def run(
     masked_consonants_train_tokens_frequency = tokens_frequency(
         dataset=tuple(masked_consonants_train_dataset)
     )
-    print(f"number of train vocabs: {len(masked_consonants_train_tokens_frequency)}")
-    print(
-        f"number of train tokens: {sum(masked_consonants_train_tokens_frequency.values())}"
+
+    masked_consonants_train_characters_frequency = characters_frequency(
+        dataset=tuple(masked_consonants_train_dataset)
     )
-    masked_consonants_train_entropy = calculate_entropy(
+
+    print(
+        f"number of masked consonants train vocabs: {len(masked_consonants_train_tokens_frequency):,}"
+    )
+    print(
+        f"number of masked consonants train tokens: {sum(masked_consonants_train_tokens_frequency.values()):,}"
+    )
+
+    print(
+        f"number of masked consonants train unique characters: {len(masked_consonants_train_characters_frequency):,}"
+    )
+    print(
+        f"number of masked consonants train all characters: {sum(masked_consonants_train_characters_frequency.values()):,}"
+    )
+
+    masked_consonants_train_words_entropy = calculate_entropy(
         tokens_frequency=masked_consonants_train_tokens_frequency
     )
-    print(f"train_entropy: {masked_consonants_train_entropy}")
+    masked_consonants_train_characters_entropy = calculate_entropy(
+        tokens_frequency=masked_consonants_train_characters_frequency
+    )
+
+    print(
+        f"train masked consonants words entropy: {masked_consonants_train_words_entropy:,}"
+    )
+    print(
+        f"train masked consonants chars entropy: {masked_consonants_train_characters_entropy:,}"
+    )
 
     print(
         f"""
@@ -185,19 +246,19 @@ def run(
         """.strip(),
     )
 
-    training_pipeline(
-        batch_size=batch_size,
-        gpu_devices=gpu_devices,
-        cpu_devices=cpu_devices,
-        vocab_coverage=vocab_coverage,
-        tokenizer_class=tokenizer_class,
-        sequence_length=sequence_length,
-        val_dataset=masked_consonants_val_dataset,
-        test_dataset=masked_consonants_test_dataset,
-        train_dataset=masked_consonants_train_dataset,
-        sequence_length_percentile=sequence_length_percentile,
-        dataset_name=f"masked-consonants-{dataset_name}-chars",
-    )
+    # training_pipeline(
+    #     batch_size=batch_size,
+    #     gpu_devices=gpu_devices,
+    #     cpu_devices=cpu_devices,
+    #     vocab_coverage=vocab_coverage,
+    #     tokenizer_class=tokenizer_class,
+    #     sequence_length=sequence_length,
+    #     val_dataset=masked_consonants_val_dataset,
+    #     test_dataset=masked_consonants_test_dataset,
+    #     train_dataset=masked_consonants_train_dataset,
+    #     sequence_length_percentile=sequence_length_percentile,
+    #     dataset_name=f"masked-consonants-{dataset_name}-chars",
+    # )
 
 
 if __name__ == "__main__":
