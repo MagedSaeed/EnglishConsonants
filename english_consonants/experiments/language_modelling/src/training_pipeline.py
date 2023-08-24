@@ -11,6 +11,7 @@ from english_consonants.experiments.language_modelling.src.callbacks import (
 )
 from english_consonants.experiments.language_modelling.src.models import (
     LitNeuralLanguageModel,
+    TransformerLanguageModel,
 )
 from english_consonants.experiments.language_modelling.src.settings import (
     configure_environment,
@@ -143,7 +144,15 @@ def training_pipeline(
 
     timer_callback = Timer()
 
-    lm_model = LitNeuralLanguageModel(vocab_size=tokenizer.vocab_size)
+    # lm_model = LitNeuralLanguageModel(vocab_size=tokenizer.vocab_size)
+    lm_model = TransformerLanguageModel(
+        vocab_size=tokenizer.vocab_size,
+        embed_dim=200,
+        num_heads=200,
+        num_layers=2,
+        dropout=0.2,
+        learning_rate=5,
+    )
 
     print(
         f"""
@@ -171,7 +180,13 @@ def training_pipeline(
         tokenizer_class=tokenizer_class,
         train_dataloader=train_dataloader,
     )
-    lm_model = LitNeuralLanguageModel.load_from_checkpoint(
+    # lm_model = LitNeuralLanguageModel.load_from_checkpoint(
+    #     get_best_checkpoint(
+    #         dataset_name=dataset_name,
+    #         tokenizer_class=tokenizer_class,
+    #     )
+    # )
+    lm_model = TransformerLanguageModel.load_from_checkpoint(
         get_best_checkpoint(
             dataset_name=dataset_name,
             tokenizer_class=tokenizer_class,

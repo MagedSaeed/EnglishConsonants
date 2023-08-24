@@ -124,19 +124,19 @@ def run(
         """.strip(),
     )
 
-    # training_pipeline(
-    #     batch_size=batch_size,
-    #     gpu_devices=gpu_devices,
-    #     cpu_devices=cpu_devices,
-    #     val_dataset=val_dataset,
-    #     test_dataset=test_dataset,
-    #     train_dataset=train_dataset,
-    #     vocab_coverage=vocab_coverage,
-    #     tokenizer_class=tokenizer_class,
-    #     sequence_length=sequence_length,
-    #     dataset_name=f"all-{dataset_name}-chars",
-    #     sequence_length_percentile=sequence_length_percentile,
-    # )
+    training_pipeline(
+        batch_size=batch_size,
+        gpu_devices=gpu_devices,
+        cpu_devices=cpu_devices,
+        val_dataset=val_dataset,
+        test_dataset=test_dataset,
+        train_dataset=train_dataset,
+        vocab_coverage=vocab_coverage,
+        tokenizer_class=tokenizer_class,
+        sequence_length=sequence_length,
+        dataset_name=f"all-{dataset_name}-chars",
+        sequence_length_percentile=sequence_length_percentile,
+    )
 
     print("training on consonants english")
 
@@ -183,19 +183,19 @@ def run(
         """.strip(),
     )
 
-    # training_pipeline(
-    #     batch_size=batch_size,
-    #     gpu_devices=gpu_devices,
-    #     cpu_devices=cpu_devices,
-    #     vocab_coverage=vocab_coverage,
-    #     tokenizer_class=tokenizer_class,
-    #     sequence_length=sequence_length,
-    #     val_dataset=consonants_val_dataset,
-    #     test_dataset=consonants_test_dataset,
-    #     train_dataset=consonants_train_dataset,
-    #     dataset_name=f"consonants-{dataset_name}-chars",
-    #     sequence_length_percentile=sequence_length_percentile,
-    # )
+    training_pipeline(
+        batch_size=batch_size,
+        gpu_devices=gpu_devices,
+        cpu_devices=cpu_devices,
+        vocab_coverage=vocab_coverage,
+        tokenizer_class=tokenizer_class,
+        sequence_length=sequence_length,
+        val_dataset=consonants_val_dataset,
+        test_dataset=consonants_test_dataset,
+        train_dataset=consonants_train_dataset,
+        dataset_name=f"consonants-{dataset_name}-chars",
+        sequence_length_percentile=sequence_length_percentile,
+    )
 
     print("training on masked consonants english")
 
@@ -246,19 +246,19 @@ def run(
         """.strip(),
     )
 
-    # training_pipeline(
-    #     batch_size=batch_size,
-    #     gpu_devices=gpu_devices,
-    #     cpu_devices=cpu_devices,
-    #     vocab_coverage=vocab_coverage,
-    #     tokenizer_class=tokenizer_class,
-    #     sequence_length=sequence_length,
-    #     val_dataset=masked_consonants_val_dataset,
-    #     test_dataset=masked_consonants_test_dataset,
-    #     train_dataset=masked_consonants_train_dataset,
-    #     sequence_length_percentile=sequence_length_percentile,
-    #     dataset_name=f"masked-consonants-{dataset_name}-chars",
-    # )
+    training_pipeline(
+        batch_size=batch_size,
+        gpu_devices=gpu_devices,
+        cpu_devices=cpu_devices,
+        vocab_coverage=vocab_coverage,
+        tokenizer_class=tokenizer_class,
+        sequence_length=sequence_length,
+        val_dataset=masked_consonants_val_dataset,
+        test_dataset=masked_consonants_test_dataset,
+        train_dataset=masked_consonants_train_dataset,
+        sequence_length_percentile=sequence_length_percentile,
+        dataset_name=f"masked-consonants-{dataset_name}-chars",
+    )
 
 
 if __name__ == "__main__":
