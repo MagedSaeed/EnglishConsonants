@@ -135,26 +135,49 @@ class LitNeuralLanguageModel(LightningModule):
         }
 
 
+# Temporarily leave PositionalEncoding module here. Will be moved somewhere else.
 class PositionalEncoding(nn.Module):
-    def __init__(self, embed_dim: int, dropout: float = 0.1, max_len: int = 5000):
-        super().__init__()
+    r"""Inject some information about the relative or absolute position of the tokens in the sequence.
+        The positional encodings have the same dimension as the embeddings, so that the two can be summed.
+        Here, we use sine and cosine functions of different frequencies.
+    .. math:
+        \text{PosEncoder}(pos, 2i) = sin(pos/10000^(2i/d_model))
+        \text{PosEncoder}(pos, 2i+1) = cos(pos/10000^(2i/d_model))
+        \text{where pos is the word position and i is the embed idx)
+    Args:
+        d_model: the embed dim (required).
+        dropout: the dropout value (default=0.1).
+        max_len: the max. length of the incoming sequence (default=5000).
+    Examples:
+        >>> pos_encoder = PositionalEncoding(d_model)
+    """
+
+    def __init__(self, d_model, dropout=0.1, max_len=5000):
+        super(PositionalEncoding, self).__init__()
         self.dropout = nn.Dropout(p=dropout)
 
-        position = torch.arange(max_len).unsqueeze(1)
+        pe = torch.zeros(max_len, d_model)
+        position = torch.arange(0, max_len, dtype=torch.float).unsqueeze(1)
         div_term = torch.exp(
-            torch.arange(0, embed_dim, 2) * (-math.log(10000.0) / embed_dim)
+            torch.arange(0, d_model, 2).float() * (-math.log(10000.0) / d_model)
         )
-        pe = torch.zeros(max_len, 1, embed_dim)
-        pe[:, 0, 0::2] = torch.sin(position * div_term)
-        pe[:, 0, 1::2] = torch.cos(position * div_term)
+        pe[:, 0::2] = torch.sin(position * div_term)
+        pe[:, 1::2] = torch.cos(position * div_term)
+        pe = pe.unsqueeze(0).transpose(0, 1)
         self.register_buffer("pe", pe)
 
     def forward(self, x):
+        r"""Inputs of forward function
+        Args:
+            x: the sequence fed to the positional encoder model (required).
+        Shape:
+            x: [sequence length, batch size, embed dim]
+            output: [sequence length, batch size, embed dim]
+        Examples:
+            >>> output = pos_encoder(x)
         """
-        Arguments:
-            x: Tensor, shape ``[seq_len, batch_size, embedding_dim]``
-        """
-        x = x + self.pe[: x.size(0)]
+
+        x = x + self.pe[: x.size(0), :]
         return self.dropout(x)
 
 
@@ -167,7 +190,7 @@ class TransformerLanguageModel(LightningModule):
         num_layers,
         dropout,
         pad_token_id=1,
-        unk_token_id=1,
+        unk_token_id=0,
         learning_rate=constants.LEARNING_RATE,
     ):
         super(TransformerLanguageModel, self).__init__()
@@ -182,8 +205,10 @@ class TransformerLanguageModel(LightningModule):
         encoder_layers = nn.TransformerEncoderLayer(
             embed_dim,
             num_heads,
-            dim_feedforward=512,
+            # dim_feedforward=512,
+            dim_feedforward=200,
             dropout=dropout,
+            batch_first=True,
         )
         self.embedding = nn.Embedding(self.vocab_size, embed_dim)
         self.transformer_encoder = nn.TransformerEncoder(encoder_layers, num_layers)
@@ -197,31 +222,31 @@ class TransformerLanguageModel(LightningModule):
         self.linear.bias.data.zero_()
         self.linear.weight.data.uniform_(-initrange, initrange)
 
-    def forward(self, src, src_mask):
+    def forward(self, src, mask, **kwargs):
         src = self.embedding(src) * math.sqrt(self.embed_dim)
         src = self.pos_encoder(src)
-        output = self.transformer_encoder(src, src_mask)
+        output = self.transformer_encoder(src, mask=mask)
         output = self.linear(output)
         return output
 
-    def generate_square_subsequent_mask(self, sz):
-        mask = (torch.triu(torch.ones(sz, sz)) == 1).transpose(0, 1)
+    def generate_square_subsequent_mask(self, size):
+        mask = (torch.triu(torch.ones(size, size)) == 1).transpose(0, 1)
         mask = (
             mask.float()
             .masked_fill(mask == 0, float("-inf"))
             .masked_fill(mask == 1, float(0.0))
-        )
+        ).to(self.device)
         return mask
 
     def step(self, batch, ignore_oovs=False, loss_reduction="mean"):
         inputs, labels = batch
-        src_mask = src_mask = self.generate_square_subsequent_mask(inputs.size(0))
+        src_mask = self.generate_square_subsequent_mask(size=inputs.size(1))
         # src_mask = None  which one do I use?
         outputs = self(inputs, src_mask)
         outputs = outputs.view(-1, self.vocab_size)
         labels = labels.view(-1)
         if ignore_oovs:
-            print("performing a step, ignoring OOVs")
+            # print("performing a step, ignoring OOVs")
             # https://discuss.pytorch.org/t/when-to-use-ignore-index/5935/11?u=magedsaeed
             labels[labels == self.unk_token_id] = self.pad_token_id
         loss = F.cross_entropy(
@@ -247,10 +272,16 @@ class TransformerLanguageModel(LightningModule):
             self.parameters(),
             lr=self.learning_rate,
         )
-        scheduler = torch.optim.lr_scheduler.StepLR(
-            optimizer,
-            1.0,
-            gamma=0.95,
+        # scheduler = torch.optim.lr_scheduler.StepLR(
+        #     optimizer,
+        #     1.0,
+        #     gamma=0.95,
+        #     verbose=True,
+        # )
+        scheduler = torch.optim.lr_scheduler.ReduceLROnPlateau(
+            optimizer=optimizer,
+            factor=0.25,
+            patience=1,
             verbose=True,
         )
         return {
