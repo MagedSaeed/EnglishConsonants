@@ -148,7 +148,7 @@ def training_pipeline(
     lm_model = TransformerLanguageModel(
         vocab_size=tokenizer.vocab_size,
         embed_dim=200,
-        num_heads=200,
+        num_heads=2,
         num_layers=2,
         dropout=0.2,
         learning_rate=5,
@@ -245,11 +245,11 @@ def training_pipeline(
 
     prompt = "<bos> "
 
-    print(
-        generate_text(
-            prompt=prompt,
-            lm_model=lm_model,
-            tokenizer=tokenizer,
-            sequence_length=sequence_length,
-        ),
-    )
+    # print(
+    #     generate_text(
+    #         prompt=prompt,
+    #         lm_model=lm_model,
+    #         tokenizer=tokenizer,
+    #         sequence_length=sequence_length,
+    #     ),
+    # )

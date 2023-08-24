@@ -137,7 +137,7 @@ def train_lm(
         deterministic=True,
         callbacks=callbacks,
         logger=wandb_logger,
-        gradient_clip_val=0.5,
+        gradient_clip_val=0.25,
         fast_dev_run=one_run,
         max_epochs=max_epochs,
         val_check_interval=0.5,
