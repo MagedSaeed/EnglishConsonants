@@ -26,15 +26,19 @@ class LanguageModelDataset(Dataset):
         for document in dataset:
             if not document:
                 continue
-            tokenized_document = tokenizer.tokenize_from_splits(document)
-            if len(tokenized_document) < (sequence_length - 2):
+            tokenized_document = (
+                ["<bos>"] + tokenizer.tokenize_from_splits(document) + ["<eos>"]
+            )
+            if len(tokenized_document) < sequence_length:
                 tokenized_document += [tokenizer.pad_token] * (
-                    sequence_length - 2 - len(tokenized_document)
+                    sequence_length - len(tokenized_document)
                 )
-            encoded_document = [tokenizer.token_to_id("<bos>")]
-            for token in tokenized_document[: sequence_length - 2]:
-                encoded_document.append(tokenizer.token_to_id(token))
-            encoded_document.append(tokenizer.token_to_id("<eos>"))
+            else:
+                tokenized_document = tokenized_document[:sequence_length]
+                tokenized_document[-1] = "<eos>"
+            encoded_document = [
+                tokenizer.token_to_id(token) for token in tokenized_document
+            ]
             self.encoded_dataset.append(encoded_document)
         # for document in dataset:
         #     if not document:

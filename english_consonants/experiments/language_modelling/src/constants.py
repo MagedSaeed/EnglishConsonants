@@ -15,6 +15,7 @@ DEFAULT_VOCAB_COVERAGE = 0.95  # for tokenizer to consider only tokens that cove
 SEQUENCE_LENGTH_PERCENTILE = 0.95  # percentile to consider lengths and return up to that percentile. 0.5 percentile should return the average
 DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
 LIGHTING_ACCELERATOR = "auto"  # used by pytorch_lightning
+RNN_TYPE = "lstm"
 
 CPU_COUNT = os.cpu_count()
 NEW_LINE = "\n"

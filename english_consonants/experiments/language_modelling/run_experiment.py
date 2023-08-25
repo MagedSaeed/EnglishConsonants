@@ -22,6 +22,18 @@ from english_consonants.experiments.language_modelling.src.training_pipeline imp
 
 @click.command()
 @click.option(
+    "--model_type",
+    default="Transformer",
+    help="Model architecture",
+    type=click.Choice(
+        [
+            "RNN",
+            "Transformer",
+        ],
+        case_sensitive=False,
+    ),
+)
+@click.option(
     "--vocab_coverage",
     default=constants.DEFAULT_VOCAB_COVERAGE,
     help="Vocab coverage to consider, the tokenizer will consider vocabs that covers this percentage of the running text",
@@ -57,6 +69,7 @@ from english_consonants.experiments.language_modelling.src.training_pipeline imp
     default=constants.SEQUENCE_LENGTH_PERCENTILE,
 )
 def run(
+    model_type,
     vocab_coverage,
     gpu_devices,
     cpu_devices,
@@ -101,6 +114,8 @@ def run(
 
     train_characters_frequency = characters_frequency(dataset=tuple(train_dataset))
 
+    print("training on normal English")
+
     print(f"number of train vocabs: {len(train_tokens_frequency):,}")
     print(f"number of train tokens: {sum(train_tokens_frequency.values()):,}")
 
@@ -125,6 +140,7 @@ def run(
     )
 
     training_pipeline(
+        model_type=model_type,
         batch_size=batch_size,
         gpu_devices=gpu_devices,
         cpu_devices=cpu_devices,
@@ -138,7 +154,7 @@ def run(
         sequence_length_percentile=sequence_length_percentile,
     )
 
-    print("training on consonants english")
+    print("training on consonants English")
 
     consonants_train_dataset = list(dataset["train"]["consonants"])
     consonants_val_dataset = list(dataset["validation"]["consonants"])
@@ -184,6 +200,7 @@ def run(
     )
 
     training_pipeline(
+        model_type=model_type,
         batch_size=batch_size,
         gpu_devices=gpu_devices,
         cpu_devices=cpu_devices,
@@ -197,7 +214,7 @@ def run(
         sequence_length_percentile=sequence_length_percentile,
     )
 
-    print("training on masked consonants english")
+    print("training on masked consonants English")
 
     masked_consonants_train_dataset = list(dataset["train"]["masked_consonants"])
     masked_consonants_val_dataset = list(dataset["validation"]["masked_consonants"])
@@ -247,6 +264,7 @@ def run(
     )
 
     training_pipeline(
+        model_type=model_type,
         batch_size=batch_size,
         gpu_devices=gpu_devices,
         cpu_devices=cpu_devices,

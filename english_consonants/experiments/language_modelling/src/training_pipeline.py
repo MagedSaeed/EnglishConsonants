@@ -1,4 +1,5 @@
 from tqdm.auto import tqdm
+from pprint import pprint
 
 from pytorch_lightning.callbacks import Timer
 from pytorch_lightning.loggers import WandbLogger
@@ -10,18 +11,18 @@ from english_consonants.experiments.language_modelling.src.callbacks import (
     LossMetricsCallback,
 )
 from english_consonants.experiments.language_modelling.src.models import (
-    LitNeuralLanguageModel,
-    TransformerLanguageModel,
+    LitRnnLM,
+    LitTransformerLM,
 )
 from english_consonants.experiments.language_modelling.src.settings import (
     configure_environment,
 )
 
 from english_consonants.experiments.language_modelling.src.utils import (
-    calculate_perplexity,
-    generate_text,
+    # calculate_perplexity,
+    # generate_text,
     get_sequence_length,
-    get_best_checkpoint,
+    # get_best_checkpoint,
     get_dataloader,
     get_tokenizer,
     get_vocab_size,
@@ -31,6 +32,7 @@ from english_consonants.experiments.language_modelling.src.utils import (
 
 
 def training_pipeline(
+    model_type,
     train_dataset,
     val_dataset,
     test_dataset,
@@ -143,16 +145,16 @@ def training_pipeline(
     )
 
     timer_callback = Timer()
+    if model_type.lower() == "rnn":
+        model_class = LitRnnLM
+    elif model_type.lower() == "transformer":
+        model_class = LitTransformerLM
+    else:
+        raise ValueError(
+            f"Model Type {model_type} is not supported. Put either 'RNN' or 'Transformer'"
+        )
 
-    # lm_model = LitNeuralLanguageModel(vocab_size=tokenizer.vocab_size)
-    lm_model = TransformerLanguageModel(
-        vocab_size=tokenizer.vocab_size,
-        embed_dim=200,
-        num_heads=2,
-        num_layers=2,
-        dropout=0.2,
-        learning_rate=5,
-    )
+    lm_model = model_class(vocab_size=vocab_size)
 
     print(
         f"""
@@ -175,53 +177,23 @@ def training_pipeline(
         wandb_logger=wandb_logger,
         callbacks=[timer_callback],
         val_dataloader=val_dataloader,
+        test_dataloader=test_dataloader,
         vocab_coverage=vocab_coverage,
         max_epochs=constants.MAX_EPOCHS,
         tokenizer_class=tokenizer_class,
         train_dataloader=train_dataloader,
     )
-    # lm_model = LitNeuralLanguageModel.load_from_checkpoint(
-    #     get_best_checkpoint(
-    #         dataset_name=dataset_name,
-    #         tokenizer_class=tokenizer_class,
-    #     )
-    # )
-    lm_model = TransformerLanguageModel.load_from_checkpoint(
-        get_best_checkpoint(
-            dataset_name=dataset_name,
-            tokenizer_class=tokenizer_class,
-        )
+    print("test results for dataloaders train,val,test as index 0,1, and 2 accordingly")
+    dataloaders = (
+        train_dataloader,
+        val_dataloader,
+        test_dataloader,
     )
-    training_perplexity = calculate_perplexity(
-        lm_model=lm_model,
-        tokenizer=tokenizer,
-        dataset=train_dataset,
-        batch_size=batch_size,
-        sequence_length=sequence_length,
+    results = trainer.test(
+        ckpt_path="best",
+        dataloaders=dataloaders,
     )
-
-    perplexity_with_oovs = calculate_perplexity(
-        lm_model=lm_model,
-        tokenizer=tokenizer,
-        dataset=test_dataset,
-        sequence_length=sequence_length,
-    )
-
-    perplexity_without_oovs = calculate_perplexity(
-        ignore_oovs=True,
-        lm_model=lm_model,
-        tokenizer=tokenizer,
-        dataset=test_dataset,
-        sequence_length=sequence_length,
-    )
-
-    print(
-        f"""
-        Training Perplexity: {training_perplexity}
-        Perplexity with OOVs: {perplexity_with_oovs}
-        Perplexity without OOVs: {perplexity_without_oovs:,}
-        """.strip(),
-    )
+    print(results)
 
     training_oov_rate = get_oovs_rate(dataloader=train_dataloader)
     val_oov_rate = get_oovs_rate(dataloader=train_dataloader)
@@ -242,14 +214,3 @@ def training_pipeline(
         Training Time: {f'{timer_callback.time_elapsed("train"):.2f} seconds'}
         """.strip(),
     )
-
-    prompt = "<bos> "
-
-    # print(
-    #     generate_text(
-    #         prompt=prompt,
-    #         lm_model=lm_model,
-    #         tokenizer=tokenizer,
-    #         sequence_length=sequence_length,
-    #     ),
-    # )

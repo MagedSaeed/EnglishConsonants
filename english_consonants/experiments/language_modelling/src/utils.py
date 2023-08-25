@@ -4,8 +4,6 @@ import shutil
 from collections import defaultdict
 from pathlib import Path
 
-import numpy as np
-import torch
 from pytorch_lightning import Trainer
 from pytorch_lightning.callbacks import (
     EarlyStopping,
@@ -25,67 +23,6 @@ from english_consonants.experiments.language_modelling.src import datasets
 from english_consonants.tokenizers import WordTokenizer
 
 
-def generate_text(
-    lm_model,
-    tokenizer,
-    sequence_length,
-    prompt="<bos> ",
-    num_tokens=10,
-    device=constants.DEVICE,
-    print_generated_token=True,
-    temperature=0.5,
-):
-    lm_model.to(device)
-    lm_model.eval()
-
-    generated_text = prompt
-
-    with torch.no_grad():
-        hiddens = None
-        for index in range(num_tokens):
-            prompt = " ".join(prompt.split()[-sequence_length:])
-            encoded = tokenizer.encode(prompt)
-            encoded = torch.LongTensor(encoded).to(device)
-            output, hiddens = lm_model(encoded, hiddens)
-            output = output.squeeze(0)
-            if len(output.size()) > 1:
-                output = output[-1]
-            output = torch.softmax(output / temperature, dim=-1)
-            predicted_token_id = torch.multinomial(output, num_samples=1).item()
-            counter = 0
-            while (
-                predicted_token_id
-                in [
-                    # tokenizer.token_to_id(tokenizer.pad_token),
-                    tokenizer.token_to_id(tokenizer.unk_token),
-                    tokenizer.token_to_id(
-                        "<bos>"
-                    ),  # this is in the case where the unk got replaced by bos
-                ]
-                and counter < 100
-            ):
-                predicted_token_id = torch.multinomial(
-                    output,
-                    num_samples=1,
-                ).item()
-                counter += 1
-
-            predicted_token = tokenizer.id_to_token(predicted_token_id)
-            if print_generated_token:
-                print("predicting:", predicted_token)
-            if predicted_token == "<eos>":
-                prompt = "<bos> "
-                hiddens = None
-                generated_text += f" {predicted_token}\n<bos> "
-            else:
-                prompt += f" {predicted_token}"
-                generated_text += f" {predicted_token}"
-            print("prompt is:", prompt)
-    return "\n".join(
-        tokenizer.detokenize(line.split()) for line in generated_text.splitlines()
-    )
-
-
 def train_lm(
     lm_model,
     dataset_name,
@@ -94,6 +31,7 @@ def train_lm(
     tokenizer_class,
     train_dataloader,
     val_dataloader,
+    test_dataloader,
     gpu_devices,
     cpu_devices,
     callbacks=[],
@@ -154,57 +92,13 @@ def train_lm(
         train_dataloader,
         val_dataloader,
     )
+    trainer.test(
+        model=lm_model,
+        dataloaders=test_dataloader,
+    )
     wandb.finish()
     # trainer.lm_model = LitNeurlaLanguageModel.load_from_checkpoint(f'Neural-Language-Models-Metrics/{dataset_id}/checkpoints/last.ckpt')
     return trainer
-
-
-def calculate_perplexity(
-    lm_model,
-    dataset,
-    tokenizer,
-    sequence_length,
-    use_tqdm=True,
-    device=constants.DEVICE,
-    batch_size=constants.DEFAULT_BATCH_SIZE,
-    ignore_oovs=False,
-):
-    # https://towardsdatascience.com/the-relationship-between-perplexity-and-entropy-in-nlp-f81888775ccc
-    # https://stackoverflow.com/a/59219379/4412324
-    lm_dataset = datasets.LanguageModelDataset(
-        dataset=dataset,
-        tokenizer=tokenizer,
-        sequence_length=sequence_length,
-    )
-    dataloader = DataLoader(
-        shuffle=False,
-        dataset=lm_dataset,
-        batch_size=batch_size,
-        num_workers=constants.CPU_COUNT,
-        collate_fn=datasets.dataset_collate_fn,
-        drop_last=True if len(lm_dataset) > batch_size else False,
-    )
-    lm_model.to(device)
-    lm_model.eval()
-    with torch.no_grad():
-        loader = tqdm(dataloader) if use_tqdm else dataloader
-        losses = list()
-        for batch in loader:
-            inputs, outputs = batch
-            inputs = inputs.to(device)
-            outputs = outputs.to(device)
-            batch_loss = lm_model.step(
-                (inputs, outputs),
-                ignore_oovs=ignore_oovs,
-                loss_reduction="none",
-            )
-            batch_loss = batch_loss.view(-1)
-            batch_loss = batch_loss[batch_loss != 0]
-            losses.extend(batch_loss.detach().cpu().tolist())
-
-    average_loss = np.mean(losses)
-    perplexity = np.exp(average_loss)
-    return perplexity
 
 
 def get_tokenizer(
@@ -279,19 +173,6 @@ def get_vocab_size(
     return vocab
 
 
-def get_best_checkpoint(
-    dataset_name,
-    tokenizer_class,
-    checkpoints_base_path="EnglishNLMs",
-):
-    checkpoints_path = (
-        f"{checkpoints_base_path}/{dataset_name}/{tokenizer_class.__name__}/checkpoints"
-    )
-    for file_name in os.listdir(checkpoints_path):
-        if file_name.startswith("epoch"):
-            return f"{checkpoints_path}/{file_name}"
-
-
 def get_sequence_length(
     dataset,
     use_tqdm=True,
@@ -331,3 +212,125 @@ def get_oovs_rate(
                 continue
             tokens_sum += 1
     return f"{(oovs / tokens_sum) * 100:.2f}"
+
+
+# def get_best_checkpoint(
+#     dataset_name,
+#     tokenizer_class,
+#     checkpoints_base_path="EnglishNLMs",
+# ):
+#     checkpoints_path = (
+#         f"{checkpoints_base_path}/{dataset_name}/{tokenizer_class.__name__}/checkpoints"
+#     )
+#     for file_name in os.listdir(checkpoints_path):
+#         if file_name.startswith("epoch"):
+#             return f"{checkpoints_path}/{file_name}"
+
+
+# def calculate_perplexity(
+#     lm_model,
+#     dataset,
+#     tokenizer,
+#     sequence_length,
+#     use_tqdm=True,
+#     device=constants.DEVICE,
+#     batch_size=constants.DEFAULT_BATCH_SIZE,
+#     ignore_oovs=False,
+# ):
+#     # https://towardsdatascience.com/the-relationship-between-perplexity-and-entropy-in-nlp-f81888775ccc
+#     # https://stackoverflow.com/a/59219379/4412324
+#     lm_dataset = datasets.LanguageModelDataset(
+#         dataset=dataset,
+#         tokenizer=tokenizer,
+#         sequence_length=sequence_length,
+#     )
+#     dataloader = DataLoader(
+#         shuffle=False,
+#         dataset=lm_dataset,
+#         batch_size=batch_size,
+#         num_workers=constants.CPU_COUNT,
+#         collate_fn=datasets.dataset_collate_fn,
+#         drop_last=True if len(lm_dataset) > batch_size else False,
+#     )
+#     lm_model.to(device)
+#     lm_model.eval()
+#     with torch.no_grad():
+#         loader = tqdm(dataloader) if use_tqdm else dataloader
+#         losses = list()
+#         for batch in loader:
+#             inputs, outputs = batch
+#             inputs = inputs.to(device)
+#             outputs = outputs.to(device)
+#             batch_loss = lm_model.step(
+#                 (inputs, outputs),
+#                 ignore_oovs=ignore_oovs,
+#                 loss_reduction="none",
+#             )
+#             batch_loss = batch_loss.view(-1)
+#             batch_loss = batch_loss[batch_loss != 0]
+#             losses.extend(batch_loss.detach().cpu().tolist())
+
+#     average_loss = np.mean(losses)
+#     perplexity = np.exp(average_loss)
+#     return perplexity
+
+
+# def generate_text(
+#     lm_model,
+#     tokenizer,
+#     sequence_length,
+#     prompt="<bos> ",
+#     num_tokens=10,
+#     device=constants.DEVICE,
+#     print_generated_token=True,
+#     temperature=0.5,
+# ):
+#     lm_model.to(device)
+#     lm_model.eval()
+
+#     generated_text = prompt
+
+#     with torch.no_grad():
+#         hiddens = None
+#         for index in range(num_tokens):
+#             prompt = " ".join(prompt.split()[-sequence_length:])
+#             encoded = tokenizer.encode(prompt)
+#             encoded = torch.LongTensor(encoded).to(device)
+#             output, hiddens = lm_model(encoded, hiddens)
+#             output = output.squeeze(0)
+#             if len(output.size()) > 1:
+#                 output = output[-1]
+#             output = torch.softmax(output / temperature, dim=-1)
+#             predicted_token_id = torch.multinomial(output, num_samples=1).item()
+#             counter = 0
+#             while (
+#                 predicted_token_id
+#                 in [
+#                     # tokenizer.token_to_id(tokenizer.pad_token),
+#                     tokenizer.token_to_id(tokenizer.unk_token),
+#                     tokenizer.token_to_id(
+#                         "<bos>"
+#                     ),  # this is in the case where the unk got replaced by bos
+#                 ]
+#                 and counter < 100
+#             ):
+#                 predicted_token_id = torch.multinomial(
+#                     output,
+#                     num_samples=1,
+#                 ).item()
+#                 counter += 1
+
+#             predicted_token = tokenizer.id_to_token(predicted_token_id)
+#             if print_generated_token:
+#                 print("predicting:", predicted_token)
+#             if predicted_token == "<eos>":
+#                 prompt = "<bos> "
+#                 hiddens = None
+#                 generated_text += f" {predicted_token}\n<bos> "
+#             else:
+#                 prompt += f" {predicted_token}"
+#                 generated_text += f" {predicted_token}"
+#             print("prompt is:", prompt)
+#     return "\n".join(
+#         tokenizer.detokenize(line.split()) for line in generated_text.splitlines()
+#     )
