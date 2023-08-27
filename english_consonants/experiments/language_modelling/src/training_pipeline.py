@@ -171,6 +171,7 @@ def training_pipeline(
     trainer = train_lm(
         # one_run=True,
         lm_model=lm_model,
+        model_type=model_type,
         cpu_devices=cpu_devices,
         gpu_devices=gpu_devices,
         dataset_name=dataset_name,

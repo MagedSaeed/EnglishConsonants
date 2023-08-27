@@ -33,13 +33,16 @@ def train_lm(
     test_dataloader,
     gpu_devices,
     cpu_devices,
+    model_type,
     callbacks=[],
     one_run=False,
     use_rich_progressbar=True,
     max_epochs=constants.MAX_EPOCHS,
 ):
     # remove any previous checkpoints
-    checkpoints_path = Path(f"EnglishNLMs/{dataset_name}/{tokenizer_class.__name__}")
+    checkpoints_path = Path(
+        f"EnglishNLMs/{dataset_name}/{tokenizer_class.__name__}/{model_type}"
+    )
     shutil.rmtree(checkpoints_path, ignore_errors=True)
     checkpoint_callback = ModelCheckpoint(
         mode="min",
@@ -50,7 +53,7 @@ def train_lm(
         save_weights_only=False,
         auto_insert_metric_name=True,
         save_on_train_epoch_end=False,
-        dirpath=f"EnglishNLMs/{dataset_name}/{tokenizer_class.__name__}/checkpoints",
+        dirpath=f"EnglishNLMs/{dataset_name}/{tokenizer_class.__name__}/{model_type}/checkpoints",
         filename="{epoch}-{val_loss:.3f}-{step}" + f"-{vocab_coverage}",
     )
     callbacks.append(checkpoint_callback)
