@@ -18,6 +18,7 @@ from english_consonants.experiments.language_modelling.src import constants
 from english_consonants.experiments.language_modelling.src.training_pipeline import (
     training_pipeline,
 )
+from english_consonants.tokenizers import TOKENIZERS_MAP
 
 
 @click.command()
@@ -68,12 +69,22 @@ from english_consonants.experiments.language_modelling.src.training_pipeline imp
     type=float,
     default=constants.SEQUENCE_LENGTH_PERCENTILE,
 )
+@click.option(
+    "--tokenizer_class",
+    help="Tokenizer class to choose",
+    type=click.Choice(
+        list(TOKENIZERS_MAP),
+        case_sensitive=False,
+    ),
+    default=constants.DEFAULT_TOKENIZER_CLASS,
+)
 def run(
     model_type,
     vocab_coverage,
     gpu_devices,
     cpu_devices,
     batch_size,
+    raw_dataset=False,
     sequence_length=None,
     tokenizer_class=constants.DEFAULT_TOKENIZER_CLASS,
     seqlen_percentile=constants.SEQUENCE_LENGTH_PERCENTILE,
@@ -81,8 +92,18 @@ def run(
     sequence_length_percentile = seqlen_percentile
     gpu_devices = list(map(int, gpu_devices.split(",")))
 
+    tokenizer_class = TOKENIZERS_MAP[tokenizer_class]
+
     dataset_name = "wikitext"
-    dataset = datasets.load_dataset("wikitext", "wikitext-2-v1")
+
+    if tokenizer_class.__name__.lower() == "sentencepiecetokenizer":
+        print("using the raw version of the dataset for sentencepiece tokenizer")
+        # this is becauase the non-raw version has unk tokens.
+        dataset = datasets.load_dataset("wikitext", "wikitext-2-raw-v1")
+    else:
+        dataset = datasets.load_dataset("wikitext", "wikitext-2-v1")
+
+    print("tokenizer class is:", tokenizer_class)
 
     def prepare_example(example):
         example["processed_text"] = process_english(example["text"])

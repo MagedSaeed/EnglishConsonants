@@ -1,6 +1,5 @@
 import os
 import torch
-from english_consonants.tokenizers import TOKENIZERS_MAP, WordTokenizer
 
 
 NUM_LAYERS = 4  # for GRU
@@ -21,7 +20,7 @@ CPU_COUNT = os.cpu_count()
 NEW_LINE = "\n"
 RANDOM_SEED = 42
 
-DEFAULT_TOKENIZER_CLASS = WordTokenizer
+DEFAULT_TOKENIZER_CLASS = "WordTokenizer"
 
 TEST_SIZE = 0.1
 VAL_SIZE = 0.05
