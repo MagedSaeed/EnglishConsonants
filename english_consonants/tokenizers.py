@@ -128,6 +128,7 @@ class SentencePieceTokenizer(tk.SentencePieceTokenizer):
             eos_id=kwargs.get("eos_id", -1),
             user_defined_symbols=self.special_tokens,
             normalization_rule_name="identity",
+            minloglevel=1,  # to suppress train logs, https://github.com/speechbrain/speechbrain/pull/206#issuecomment-669260984
         )
         model_file = tempfile.NamedTemporaryFile()
         self.save_model(model_file.name)
