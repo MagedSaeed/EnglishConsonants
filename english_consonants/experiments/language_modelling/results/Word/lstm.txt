@@ -1,15 +1,16 @@
-(english-consonants-venv):~/Experiments/EnglishConsonants$ python english_consonants/experiments/language_modelling/run_experiment.py --gpu_devices=1 --vocab_coverag
-e=1 --batch_size=32
+(english-consonants-venv):~/Experiments/EnglishConsonants$ python english_consonants/experiments/language_modelling/run_experiment.py --gpu_devices=0 --vocab_coverag
+e=1 --batch_size=32 --model_type=rnn
 Found cached dataset wikitext (.cache/huggingface/datasets/wikitext/wikitext-2-v1/1.0.0/a241db52902eaf2c6aa732210bead40c090019a499ceb13bcbfa3f8ab646a126)
-100%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 3/3 [00:00<00:00, 1429.71it/s]
+100%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 3/3 [00:00<00:00, 1610.92it/s]
+tokenizer class is: <class 'english_consonants.tokenizers.WordTokenizer'>
 Loading cached processed dataset at .cache/huggingface/datasets/wikitext/wikitext-2-v1/1.0.0/a241db52902eaf2c6aa732210bead40c090019a499ceb13bcbfa3f8ab646a126/cache-1fd
 f7473581b0bfb.arrow
 Loading cached processed dataset at .cache/huggingface/datasets/wikitext/wikitext-2-v1/1.0.0/a241db52902eaf2c6aa732210bead40c090019a499ceb13bcbfa3f8ab646a126/cache-fe8
 2178e12600f83.arrow
 Loading cached processed dataset at .cache/huggingface/datasets/wikitext/wikitext-2-v1/1.0.0/a241db52902eaf2c6aa732210bead40c090019a499ceb13bcbfa3f8ab646a126/cache-61e
 ce7f799b57ae9.arrow
-100%|███████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 36718/36718 [00:00<00:00, 146849.03it/s]
-100%|████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 36718/36718 [00:00<00:00, 61876.70it/s]
+100%|███████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 36718/36718 [00:00<00:00, 144886.71it/s]
+100%|████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 36718/36718 [00:00<00:00, 64356.74it/s]
 training on normal English
 number of train vocabs: 33,277
 number of train tokens: 2,051,910
@@ -33,36 +34,37 @@ Train Samples: 36,718
         Val Samples: 3,760
         Test Samples: 4,358
 Calculating vocab size using WordTokenizer:
-100%|████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 36718/36718 [00:00<00:00, 84887.68it/s]
+100%|███████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 36718/36718 [00:00<00:00, 120986.75it/s]
 Considered Vocab (from WordTokenizer): 33,281
         All Vocab (WordTokenizer): 33,281
 Training WordTokenizer ...
 Tokenizer Vocab Size: 33,281
 Calculating Sequence Length:
-100%|███████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 36718/36718 [00:00<00:00, 247808.76it/s]
-100%|██████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 36718/36718 [00:00<00:00, 3656894.48it/s]
+100%|███████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 36718/36718 [00:00<00:00, 252151.31it/s]
+100%|██████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 36718/36718 [00:00<00:00, 3703146.44it/s]
 Sequence Length: 216
 Building DataLoaders
-100%|████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 36718/36718 [00:00<00:00, 39294.30it/s]
-100%|██████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 3760/3760 [00:00<00:00, 33605.56it/s]
-100%|██████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 4358/4358 [00:00<00:00, 40421.53it/s]
+100%|████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 36718/36718 [00:00<00:00, 39852.32it/s]
+100%|██████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 3760/3760 [00:00<00:00, 34167.26it/s]
+100%|██████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 4358/4358 [00:00<00:00, 40711.06it/s]
 Train DataLoader: 742
         Val DataLoader: 76
         Test DataLoader: 90
-| Name                | Type               | Params
------------------------------------------------------------
-0 | pos_encoder         | PositionalEncoding | 0
-1 | embedding           | Embedding          | 6.7 M
-2 | transformer_encoder | TransformerEncoder | 484 K
-3 | linear              | Linear             | 6.7 M
-4 | train_ppl           | Perplexity         | 0
-5 | val_ppl             | Perplexity         | 0
-6 | test_ppl            | Perplexity         | 0
------------------------------------------------------------
-13.8 M    Trainable params
+| Name            | Type       | Params
+-----------------------------------------------
+0 | embedding_layer | Embedding  | 17.0 M
+1 | rnn             | LSTM       | 8.4 M
+2 | dropout_layer   | Dropout    | 0
+3 | relu            | ReLU       | 0
+4 | dense_layer     | Linear     | 17.1 M
+5 | train_ppl       | Perplexity | 0
+6 | val_ppl         | Perplexity | 0
+7 | test_ppl        | Perplexity | 0
+-----------------------------------------------
+25.5 M    Trainable params
 0         Non-trainable params
-13.8 M    Total params
-55.319    Total estimated model params size (MB)
+25.5 M    Total params
+101.913   Total estimated model params size (MB)
 GPU available: True (cuda), used: True
 TPU available: False, using: 0 TPU cores
 IPU available: False, using: 0 IPUs
@@ -70,74 +72,85 @@ HPU available: False, using: 0 HPUs
 You are using a CUDA device ('NVIDIA RTX A4500') that has Tensor Cores. To properly utilize them, you should set `torch.set_float32_matmul_precision('medium' | 'high')` which will trade-off
 precision for performance. For more details, read https://pytorch.org/docs/stable/generated/torch.set_float32_matmul_precision.html#torch.set_float32_matmul_precision
 LOCAL_RANK: 0 - CUDA_VISIBLE_DEVICES: [0,1]
+Traceback (most recent call last):
+  File "/usr/lib/python3.10/multiprocessing/util.py", line 300, in _run_finalizers
+    finalizer()
+  File "/usr/lib/python3.10/multiprocessing/util.py", line 224, in __call__
+    res = self._callback(*self._args, **self._kwargs)
+  File "/usr/lib/python3.10/multiprocessing/util.py", line 133, in _remove_temp_dir
+    rmtree(tempdir)
+  File "/usr/lib/python3.10/shutil.py", line 731, in rmtree
+    onerror(os.rmdir, path, sys.exc_info())
+  File "/usr/lib/python3.10/shutil.py", line 729, in rmtree
+    os.rmdir(path)
+OSError: [Errno 39] Directory not empty: '/tmp/pymp-r1nsr5q6'
 ┏━━━━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
 ┃      Validate metric      ┃       DataLoader 0        ┃
 ┡━━━━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━━━━━┩
-│         val_loss          │    10.784213066101074     │
-│          val_ppl          │      48278.98046875       │
+│         val_loss          │    10.462867736816406     │
+│          val_ppl          │       34995.046875        │
 └───────────────────────────┴───────────────────────────┘
-Validation ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 76/76 0:00:06 • 0:00:00 18.60it/s
+Validation ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 76/76 0:00:03 • 0:00:00 23.34it/s
 You are using a CUDA device ('NVIDIA RTX A4500') that has Tensor Cores. To properly utilize them, you should set `torch.set_float32_matmul_precision('medium' | 'high')` which will trade-off
 precision for performance. For more details, read https://pytorch.org/docs/stable/generated/torch.set_float32_matmul_precision.html#torch.set_float32_matmul_precision
-Experiments/english-consonants-venv/lib/python3.10/site-packages/pytorch_lightning/callbacks/model_checkpoint.py:612: UserWarning: Checkpoint directory Experiments/EnglishConsonants/EnglishNLMs/all-wikitext-chars/WordTokenizer/checkpoints exists and is not empty.
-  rank_zero_warn(f"Checkpoint directory {dirpath} exists and is not empty.")
 LOCAL_RANK: 0 - CUDA_VISIBLE_DEVICES: [0,1]
-┏━━━┳━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━┓
-┃   ┃ Name                ┃ Type               ┃ Params ┃
-┡━━━╇━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━┩
-│ 0 │ pos_encoder         │ PositionalEncoding │      0 │
-│ 1 │ embedding           │ Embedding          │  6.7 M │
-│ 2 │ transformer_encoder │ TransformerEncoder │  484 K │
-│ 3 │ linear              │ Linear             │  6.7 M │
-│ 4 │ train_ppl           │ Perplexity         │      0 │
-│ 5 │ val_ppl             │ Perplexity         │      0 │
-│ 6 │ test_ppl            │ Perplexity         │      0 │
-└───┴─────────────────────┴────────────────────┴────────┘
-Trainable params: 13.8 M
+┏━━━┳━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━┳━━━━━━━━┓
+┃   ┃ Name            ┃ Type       ┃ Params ┃
+┡━━━╇━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━╇━━━━━━━━┩
+│ 0 │ embedding_layer │ Embedding  │ 17.0 M │
+│ 1 │ rnn             │ LSTM       │  8.4 M │
+│ 2 │ dropout_layer   │ Dropout    │      0 │
+│ 3 │ relu            │ ReLU       │      0 │
+│ 4 │ dense_layer     │ Linear     │ 17.1 M │
+│ 5 │ train_ppl       │ Perplexity │      0 │
+│ 6 │ val_ppl         │ Perplexity │      0 │
+│ 7 │ test_ppl        │ Perplexity │      0 │
+└───┴─────────────────┴────────────┴────────┘
+Trainable params: 25.5 M
 Non-trainable params: 0
-Total params: 13.8 M
-Total estimated model params size (MB): 55
-Epoch 00019: reducing learning rate of group 0 to 1.2500e+00.
-Epoch 00022: reducing learning rate of group 0 to 3.1250e-01.
-Epoch 00026: reducing learning rate of group 0 to 7.8125e-02.
-Epoch 00028: reducing learning rate of group 0 to 1.9531e-02.
-Epoch 00030: reducing learning rate of group 0 to 4.8828e-03.
-Epoch 29/99 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 742/742 0:01:37 • 0:00:00 8.32it/s v_num: hkfl ppl: 39.381 loss: 3.673 val_ppl: 105.542 val_loss: 4.624
+Total params: 25.5 M
+Total estimated model params size (MB): 101
+Epoch 00050: reducing learning rate of group 0 to 5.0000e-04.
+Epoch 00052: reducing learning rate of group 0 to 2.5000e-04.
+Epoch 00054: reducing learning rate of group 0 to 1.2500e-04.
+Epoch 53/99 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 742/742 0:01:28 • 0:00:00 9.32it/s v_num: xl7p ppl: 80.423 loss: 4.387 val_ppl: 109.25 val_loss: 4.663
 You are using a CUDA device ('NVIDIA RTX A4500') that has Tensor Cores. To properly utilize them, you should set `torch.set_float32_matmul_precision('medium' | 'high')` which will trade-off
 precision for performance. For more details, read https://pytorch.org/docs/stable/generated/torch.set_float32_matmul_precision.html#torch.set_float32_matmul_precision
 LOCAL_RANK: 0 - CUDA_VISIBLE_DEVICES: [0,1]
 ┏━━━━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
 ┃        Test metric        ┃       DataLoader 0        ┃
 ┡━━━━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━━━━━┩
-│         test_loss         │     4.452736854553223     │
-│         test_ppl          │     95.40013885498047     │
+│         test_loss         │    4.6009955406188965     │
+│         test_ppl          │    106.01875305175781     │
 └───────────────────────────┴───────────────────────────┘
-Testing ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 90/90 0:00:04 • 0:00:00 18.63it/s
+Testing ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 90/90 0:00:03 • 0:00:00 23.01it/s
 test results for dataloaders train,val,test as index 0,1, and 2 accordingly
 You are using a CUDA device ('NVIDIA RTX A4500') that has Tensor Cores. To properly utilize them, you should set `torch.set_float32_matmul_precision('medium' | 'high')` which will trade-off
 precision for performance. For more details, read https://pytorch.org/docs/stable/generated/torch.set_float32_matmul_precision.html#torch.set_float32_matmul_precision
-Restoring states from the checkpoint path at Experiments/EnglishConsonants/EnglishNLMs/all-wikitext-chars/WordTokenizer/checkpoints/epoch=23-val_loss=4.620-step=17808-1.0.ckpt
+Restoring states from the checkpoint path at Experiments/EnglishConsonants/EnglishNLMs/all-wikitext-chars/WordTokenizer/RNN/checkpoints/epoch=47-val_loss=4.658-step=35
+616-1.0.ckpt
 LOCAL_RANK: 0 - CUDA_VISIBLE_DEVICES: [0,1]
-Loaded model weights from the checkpoint at Experiments/EnglishConsonants/EnglishNLMs/all-wikitext-chars/WordTokenizer/checkpoints/epoch=23-val_loss=4.620-step=17808-1.0.ckpt
+Loaded model weights from the checkpoint at Experiments/EnglishConsonants/EnglishNLMs/all-wikitext-chars/WordTokenizer/RNN/checkpoints/epoch=47-val_loss=4.658-step=356
+16-1.0.ckpt
 Experiments/english-consonants-venv/lib/python3.10/site-packages/pytorch_lightning/trainer/connectors/data_connector.py:478: PossibleUserWarning: Your `test_dataloader
 `'s sampler has shuffling enabled, it is strongly recommended that you turn shuffling off for val/test dataloaders.
   rank_zero_warn(
 ┏━━━━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
 ┃        Test metric        ┃       DataLoader 0        ┃       DataLoader 1        ┃       DataLoader 2        ┃
 ┡━━━━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━━━━━┩
-│         test_loss         │     3.302183151245117     │     4.619641304016113     │     4.448425769805908     │
-│         test_ppl          │    27.361602783203125     │    105.03252410888672     │     94.89934539794922     │
+│         test_loss         │    3.6671125888824463     │     4.657750129699707     │     4.599318981170654     │
+│         test_ppl          │     39.5320930480957      │    108.55327606201172     │    105.61222076416016     │
 └───────────────────────────┴───────────────────────────┴───────────────────────────┴───────────────────────────┘
-Testing ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 90/90 0:00:04 • 0:00:00 18.67it/s
-[{'test_ppl/dataloader_idx_0': 27.361602783203125, 'test_loss/dataloader_idx_0': 3.302183151245117}, {'test_ppl/dataloader_idx_1': 105.03252410888672, 'test_loss/dataloader_idx_1': 4.6196413
-04016113}, {'test_ppl/dataloader_idx_2': 94.89934539794922, 'test_loss/dataloader_idx_2': 4.448425769805908}]
+Testing ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 90/90 0:00:03 • 0:00:00 23.03it/s
+[{'test_ppl/dataloader_idx_0': 39.5320930480957, 'test_loss/dataloader_idx_0': 3.6671125888824463}, {'test_ppl/dataloader_idx_1': 108.55327606201172, 'test_loss/dataloader_idx_1': 4.65775012
+9699707}, {'test_ppl/dataloader_idx_2': 105.61222076416016, 'test_loss/dataloader_idx_2': 4.599318981170654}]
 Training OOVs rate: 0.00
         Validation OOVs rate: 0.00
         Test OOVs rate: 0.00
-Training Time: 3093.62 seconds
+Training Time: 5115.86 seconds
 training on consonants English
-100%|███████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 36718/36718 [00:00<00:00, 159416.08it/s]
-100%|████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 36718/36718 [00:00<00:00, 83889.32it/s]
+100%|███████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 36718/36718 [00:00<00:00, 155717.95it/s]
+100%|████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 36718/36718 [00:00<00:00, 85166.52it/s]
 number of consonants train vocabs: 25,538
 number of consonants train tokens: 2,012,005
 number of consonants train unique characters: 271
@@ -158,36 +171,37 @@ Train Samples: 36,718
         Val Samples: 3,760
         Test Samples: 4,358
 Calculating vocab size using WordTokenizer:
-100%|███████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 36718/36718 [00:00<00:00, 127557.53it/s]
+100%|███████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 36718/36718 [00:00<00:00, 127554.15it/s]
 Considered Vocab (from WordTokenizer): 25,542
         All Vocab (WordTokenizer): 25,542
 Training WordTokenizer ...
 Tokenizer Vocab Size: 25,542
 Calculating Sequence Length:
-100%|███████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 36718/36718 [00:00<00:00, 238947.52it/s]
-100%|██████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 36718/36718 [00:00<00:00, 3475972.88it/s]
+100%|███████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 36718/36718 [00:00<00:00, 232421.53it/s]
+100%|██████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 36718/36718 [00:00<00:00, 3767373.33it/s]
 Sequence Length: 211
 Building DataLoaders
-100%|████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 36718/36718 [00:00<00:00, 38724.47it/s]
-100%|██████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 3760/3760 [00:00<00:00, 40919.72it/s]
-100%|██████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 4358/4358 [00:00<00:00, 41623.56it/s]
+100%|████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 36718/36718 [00:01<00:00, 27532.46it/s]
+100%|██████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 3760/3760 [00:00<00:00, 41102.19it/s]
+100%|██████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 4358/4358 [00:00<00:00, 34891.82it/s]
 Train DataLoader: 742
         Val DataLoader: 76
         Test DataLoader: 90
-| Name                | Type               | Params
------------------------------------------------------------
-0 | pos_encoder         | PositionalEncoding | 0
-1 | embedding           | Embedding          | 5.1 M
-2 | transformer_encoder | TransformerEncoder | 484 K
-3 | linear              | Linear             | 5.1 M
-4 | train_ppl           | Perplexity         | 0
-5 | val_ppl             | Perplexity         | 0
-6 | test_ppl            | Perplexity         | 0
------------------------------------------------------------
-10.7 M    Trainable params
+| Name            | Type       | Params
+-----------------------------------------------
+0 | embedding_layer | Embedding  | 13.1 M
+1 | rnn             | LSTM       | 8.4 M
+2 | dropout_layer   | Dropout    | 0
+3 | relu            | ReLU       | 0
+4 | dense_layer     | Linear     | 13.1 M
+5 | train_ppl       | Perplexity | 0
+6 | val_ppl         | Perplexity | 0
+7 | test_ppl        | Perplexity | 0
+-----------------------------------------------
+21.5 M    Trainable params
 0         Non-trainable params
-10.7 M    Total params
-42.905    Total estimated model params size (MB)
+21.5 M    Total params
+86.032    Total estimated model params size (MB)
 GPU available: True (cuda), used: True
 TPU available: False, using: 0 TPU cores
 IPU available: False, using: 0 IPUs
@@ -198,66 +212,68 @@ LOCAL_RANK: 0 - CUDA_VISIBLE_DEVICES: [0,1]
 ┏━━━━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
 ┃      Validate metric      ┃       DataLoader 0        ┃
 ┡━━━━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━━━━━┩
-│         val_loss          │    10.362190246582031     │
-│          val_ppl          │       31658.1640625       │
+│         val_loss          │    10.166621208190918     │
+│          val_ppl          │      26022.69921875       │
 └───────────────────────────┴───────────────────────────┘
-Validation ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 76/76 0:00:03 • 0:00:00 24.25it/s
+Validation ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 76/76 0:00:02 • 0:00:00 28.24it/s
 You are using a CUDA device ('NVIDIA RTX A4500') that has Tensor Cores. To properly utilize them, you should set `torch.set_float32_matmul_precision('medium' | 'high')` which will trade-off
 precision for performance. For more details, read https://pytorch.org/docs/stable/generated/torch.set_float32_matmul_precision.html#torch.set_float32_matmul_precision
 LOCAL_RANK: 0 - CUDA_VISIBLE_DEVICES: [0,1]
-┏━━━┳━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━┓
-┃   ┃ Name                ┃ Type               ┃ Params ┃
-┡━━━╇━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━┩
-│ 0 │ pos_encoder         │ PositionalEncoding │      0 │
-│ 1 │ embedding           │ Embedding          │  5.1 M │
-│ 2 │ transformer_encoder │ TransformerEncoder │  484 K │
-│ 3 │ linear              │ Linear             │  5.1 M │
-│ 4 │ train_ppl           │ Perplexity         │      0 │
-│ 5 │ val_ppl             │ Perplexity         │      0 │
-│ 6 │ test_ppl            │ Perplexity         │      0 │
-└───┴─────────────────────┴────────────────────┴────────┘
-Trainable params: 10.7 M
+┏━━━┳━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━┳━━━━━━━━┓
+┃   ┃ Name            ┃ Type       ┃ Params ┃
+┡━━━╇━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━╇━━━━━━━━┩
+│ 0 │ embedding_layer │ Embedding  │ 13.1 M │
+│ 1 │ rnn             │ LSTM       │  8.4 M │
+│ 2 │ dropout_layer   │ Dropout    │      0 │
+│ 3 │ relu            │ ReLU       │      0 │
+│ 4 │ dense_layer     │ Linear     │ 13.1 M │
+│ 5 │ train_ppl       │ Perplexity │      0 │
+│ 6 │ val_ppl         │ Perplexity │      0 │
+│ 7 │ test_ppl        │ Perplexity │      0 │
+└───┴─────────────────┴────────────┴────────┘
+Trainable params: 21.5 M
 Non-trainable params: 0
-Total params: 10.7 M
-Total estimated model params size (MB): 42
-Epoch 00022: reducing learning rate of group 0 to 1.2500e+00.
-Epoch 00025: reducing learning rate of group 0 to 3.1250e-01.
-Epoch 00029: reducing learning rate of group 0 to 7.8125e-02.
-Epoch 00031: reducing learning rate of group 0 to 1.9531e-02.
-Epoch 00033: reducing learning rate of group 0 to 4.8828e-03.
-Epoch 32/99 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 742/742 0:01:19 • 0:00:00 10.29it/s v_num: p3p0 ppl: 49.319 loss: 3.898 val_ppl: 105.709 val_loss: 4.629
+Total params: 21.5 M
+Total estimated model params size (MB): 86
+Epoch 00048: reducing learning rate of group 0 to 5.0000e-04.
+Epoch 00051: reducing learning rate of group 0 to 2.5000e-04.
+Epoch 00053: reducing learning rate of group 0 to 1.2500e-04.
+Epoch 00055: reducing learning rate of group 0 to 6.2500e-05.
+Epoch 55/99 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 742/742 0:01:12 • 0:00:00 11.44it/s v_num: 5num ppl: 68.443 loss: 4.226 val_ppl: 113.074 val_loss: 4.703
 You are using a CUDA device ('NVIDIA RTX A4500') that has Tensor Cores. To properly utilize them, you should set `torch.set_float32_matmul_precision('medium' | 'high')` which will trade-off
 precision for performance. For more details, read https://pytorch.org/docs/stable/generated/torch.set_float32_matmul_precision.html#torch.set_float32_matmul_precision
 LOCAL_RANK: 0 - CUDA_VISIBLE_DEVICES: [0,1]
 ┏━━━━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
 ┃        Test metric        ┃       DataLoader 0        ┃
 ┡━━━━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━━━━━┩
-│         test_loss         │     4.450425624847412     │
-│         test_ppl          │     94.64290618896484     │
+│         test_loss         │    4.6330156326293945     │
+│         test_ppl          │    109.06966400146484     │
 └───────────────────────────┴───────────────────────────┘
-Testing ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 90/90 0:00:03 • 0:00:00 24.11it/s
+Testing ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 90/90 0:00:03 • 0:00:00 28.38it/s
 test results for dataloaders train,val,test as index 0,1, and 2 accordingly
 You are using a CUDA device ('NVIDIA RTX A4500') that has Tensor Cores. To properly utilize them, you should set `torch.set_float32_matmul_precision('medium' | 'high')` which will trade-off
 precision for performance. For more details, read https://pytorch.org/docs/stable/generated/torch.set_float32_matmul_precision.html#torch.set_float32_matmul_precision
-Restoring states from the checkpoint path at Experiments/EnglishConsonants/EnglishNLMs/consonants-wikitext-chars/WordTokenizer/checkpoints/epoch=31-val_loss=4.628-step=23373-1.0.ckpt
+Restoring states from the checkpoint path at Experiments/EnglishConsonants/EnglishNLMs/consonants-wikitext-chars/WordTokenizer/RNN/checkpoints/epoch=48-val_loss=4.698-
+step=36358-1.0.ckpt
 LOCAL_RANK: 0 - CUDA_VISIBLE_DEVICES: [0,1]
-Loaded model weights from the checkpoint at Experiments/EnglishConsonants/EnglishNLMs/consonants-wikitext-chars/WordTokenizer/checkpoints/epoch=31-val_loss=4.628-step=23373-1.0.ckpt
+Loaded model weights from the checkpoint at Experiments/EnglishConsonants/EnglishNLMs/consonants-wikitext-chars/WordTokenizer/RNN/checkpoints/epoch=48-val_loss=4.698-s
+tep=36358-1.0.ckpt
 ┏━━━━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
 ┃        Test metric        ┃       DataLoader 0        ┃       DataLoader 1        ┃       DataLoader 2        ┃
 ┡━━━━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━━━━━┩
-│         test_loss         │     3.407320022583008     │     4.628174304962158     │     4.450031280517578     │
-│         test_ppl          │    30.382049560546875     │    105.64283752441406     │     94.59507751464844     │
+│         test_loss         │    3.8038830757141113     │     4.698048114776611     │     4.628124713897705     │
+│         test_ppl          │    45.320159912109375     │    112.48771667480469     │    108.44271087646484     │
 └───────────────────────────┴───────────────────────────┴───────────────────────────┴───────────────────────────┘
-Testing ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 90/90 0:00:03 • 0:00:00 24.09it/s
-[{'test_ppl/dataloader_idx_0': 30.382049560546875, 'test_loss/dataloader_idx_0': 3.407320022583008}, {'test_ppl/dataloader_idx_1': 105.64283752441406, 'test_loss/dataloader_idx_1': 4.6281743
-04962158}, {'test_ppl/dataloader_idx_2': 94.59507751464844, 'test_loss/dataloader_idx_2': 4.450031280517578}]
+Testing ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 90/90 0:00:03 • 0:00:00 28.41it/s
+[{'test_ppl/dataloader_idx_0': 45.320159912109375, 'test_loss/dataloader_idx_0': 3.8038830757141113}, {'test_ppl/dataloader_idx_1': 112.48771667480469, 'test_loss/dataloader_idx_1': 4.698048
+114776611}, {'test_ppl/dataloader_idx_2': 108.44271087646484, 'test_loss/dataloader_idx_2': 4.628124713897705}]
 Training OOVs rate: 0.00
         Validation OOVs rate: 0.00
         Test OOVs rate: 0.00
-Training Time: 2790.23 seconds
+Training Time: 4429.13 seconds
 training on masked consonants English
-100%|███████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 36718/36718 [00:00<00:00, 143325.55it/s]
-100%|████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 36718/36718 [00:00<00:00, 57453.35it/s]
+100%|███████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 36718/36718 [00:00<00:00, 144316.20it/s]
+100%|████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 36718/36718 [00:00<00:00, 59950.05it/s]
 number of masked consonants train vocabs: 30,090
 number of masked consonants train tokens: 2,051,910
 number of masked consonants train unique characters: 272
@@ -280,36 +296,37 @@ Train Samples: 36,718
         Val Samples: 3,760
         Test Samples: 4,358
 Calculating vocab size using WordTokenizer:
-100%|███████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 36718/36718 [00:00<00:00, 113158.75it/s]
+100%|███████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 36718/36718 [00:00<00:00, 116974.09it/s]
 Considered Vocab (from WordTokenizer): 30,094
         All Vocab (WordTokenizer): 30,094
 Training WordTokenizer ...
 Tokenizer Vocab Size: 30,094
 Calculating Sequence Length:
-100%|███████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 36718/36718 [00:00<00:00, 238402.67it/s]
-100%|██████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 36718/36718 [00:00<00:00, 3544778.67it/s]
+100%|███████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 36718/36718 [00:00<00:00, 245154.35it/s]
+100%|██████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 36718/36718 [00:00<00:00, 3476600.62it/s]
 Sequence Length: 216
 Building DataLoaders
-100%|████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 36718/36718 [00:01<00:00, 34770.35it/s]
-100%|██████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 3760/3760 [00:00<00:00, 36742.94it/s]
-100%|██████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 4358/4358 [00:00<00:00, 31445.09it/s]
+100%|████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 36718/36718 [00:00<00:00, 37429.97it/s]
+100%|██████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 3760/3760 [00:00<00:00, 39630.95it/s]
+100%|██████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 4358/4358 [00:00<00:00, 33308.57it/s]
 Train DataLoader: 742
         Val DataLoader: 76
         Test DataLoader: 90
-| Name                | Type               | Params
------------------------------------------------------------
-0 | pos_encoder         | PositionalEncoding | 0
-1 | embedding           | Embedding          | 6.0 M
-2 | transformer_encoder | TransformerEncoder | 484 K
-3 | linear              | Linear             | 6.0 M
-4 | train_ppl           | Perplexity         | 0
-5 | val_ppl             | Perplexity         | 0
-6 | test_ppl            | Perplexity         | 0
------------------------------------------------------------
-12.6 M    Trainable params
+| Name            | Type       | Params
+-----------------------------------------------
+0 | embedding_layer | Embedding  | 15.4 M
+1 | rnn             | LSTM       | 8.4 M
+2 | dropout_layer   | Dropout    | 0
+3 | relu            | ReLU       | 0
+4 | dense_layer     | Linear     | 15.4 M
+5 | train_ppl       | Perplexity | 0
+6 | val_ppl         | Perplexity | 0
+7 | test_ppl        | Perplexity | 0
+-----------------------------------------------
+23.8 M    Trainable params
 0         Non-trainable params
-12.6 M    Total params
-50.207    Total estimated model params size (MB)
+23.8 M    Total params
+95.373    Total estimated model params size (MB)
 GPU available: True (cuda), used: True
 TPU available: False, using: 0 TPU cores
 IPU available: False, using: 0 IPUs
@@ -320,63 +337,73 @@ LOCAL_RANK: 0 - CUDA_VISIBLE_DEVICES: [0,1]
 ┏━━━━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
 ┃      Validate metric      ┃       DataLoader 0        ┃
 ┡━━━━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━━━━━┩
-│         val_loss          │    10.734917640686035     │
-│          val_ppl          │      45962.95703125       │
+│         val_loss          │    10.343059539794922     │
+│          val_ppl          │      31044.181640625      │
 └───────────────────────────┴───────────────────────────┘
-Validation ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 76/76 0:00:03 • 0:00:00 20.45it/s
+Validation ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 76/76 0:00:03 • 0:00:00 24.82it/s
 You are using a CUDA device ('NVIDIA RTX A4500') that has Tensor Cores. To properly utilize them, you should set `torch.set_float32_matmul_precision('medium' | 'high')` which will trade-off
 precision for performance. For more details, read https://pytorch.org/docs/stable/generated/torch.set_float32_matmul_precision.html#torch.set_float32_matmul_precision
 LOCAL_RANK: 0 - CUDA_VISIBLE_DEVICES: [0,1]
-┏━━━┳━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━┓
-┃   ┃ Name                ┃ Type               ┃ Params ┃
-┡━━━╇━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━┩
-│ 0 │ pos_encoder         │ PositionalEncoding │      0 │
-│ 1 │ embedding           │ Embedding          │  6.0 M │
-│ 2 │ transformer_encoder │ TransformerEncoder │  484 K │
-│ 3 │ linear              │ Linear             │  6.0 M │
-│ 4 │ train_ppl           │ Perplexity         │      0 │
-│ 5 │ val_ppl             │ Perplexity         │      0 │
-│ 6 │ test_ppl            │ Perplexity         │      0 │
-└───┴─────────────────────┴────────────────────┴────────┘
-Trainable params: 12.6 M
+┏━━━┳━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━┳━━━━━━━━┓
+┃   ┃ Name            ┃ Type       ┃ Params ┃
+┡━━━╇━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━╇━━━━━━━━┩
+│ 0 │ embedding_layer │ Embedding  │ 15.4 M │
+│ 1 │ rnn             │ LSTM       │  8.4 M │
+│ 2 │ dropout_layer   │ Dropout    │      0 │
+│ 3 │ relu            │ ReLU       │      0 │
+│ 4 │ dense_layer     │ Linear     │ 15.4 M │
+│ 5 │ train_ppl       │ Perplexity │      0 │
+│ 6 │ val_ppl         │ Perplexity │      0 │
+│ 7 │ test_ppl        │ Perplexity │      0 │
+└───┴─────────────────┴────────────┴────────┘
+Trainable params: 23.8 M
 Non-trainable params: 0
-Total params: 12.6 M
-Total estimated model params size (MB): 50
-Epoch 00013: reducing learning rate of group 0 to 1.2500e+00.
-Epoch 00023: reducing learning rate of group 0 to 3.1250e-01.
-Epoch 00027: reducing learning rate of group 0 to 7.8125e-02.
-Epoch 00029: reducing learning rate of group 0 to 1.9531e-02.
-Epoch 00031: reducing learning rate of group 0 to 4.8828e-03.
-Epoch 00033: reducing learning rate of group 0 to 1.2207e-03.
-Epoch 00035: reducing learning rate of group 0 to 3.0518e-04.
-Epoch 34/99 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 742/742 0:01:30 • 0:00:00 9.05it/s v_num: j3xl ppl: 55.428 loss: 4.015 val_ppl: 106.146 val_loss: 4.633
+Total params: 23.8 M
+Total estimated model params size (MB): 95
+Epoch 00041: reducing learning rate of group 0 to 5.0000e-04.
+Epoch 00047: reducing learning rate of group 0 to 2.5000e-04.
+Epoch 48/99 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 742/742 0:01:22 • 0:00:00 10.03it/s v_num: 4kxb ppl: 78.532 loss: 4.364 val_ppl: 106.081 val_loss: 4.637
 You are using a CUDA device ('NVIDIA RTX A4500') that has Tensor Cores. To properly utilize them, you should set `torch.set_float32_matmul_precision('medium' | 'high')` which will trade-off
 precision for performance. For more details, read https://pytorch.org/docs/stable/generated/torch.set_float32_matmul_precision.html#torch.set_float32_matmul_precision
 LOCAL_RANK: 0 - CUDA_VISIBLE_DEVICES: [0,1]
 ┏━━━━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
 ┃        Test metric        ┃       DataLoader 0        ┃
 ┡━━━━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━━━━━┩
-│         test_loss         │     4.464595317840576     │
-│         test_ppl          │     96.0391616821289      │
+│         test_loss         │     4.579355716705322     │
+│         test_ppl          │    103.59971618652344     │
 └───────────────────────────┴───────────────────────────┘
-Testing ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 90/90 0:00:04 • 0:00:00 20.28it/s
+Testing ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 90/90 0:00:03 • 0:00:00 24.72it/s
 test results for dataloaders train,val,test as index 0,1, and 2 accordingly
 You are using a CUDA device ('NVIDIA RTX A4500') that has Tensor Cores. To properly utilize them, you should set `torch.set_float32_matmul_precision('medium' | 'high')` which will trade-off
 precision for performance. For more details, read https://pytorch.org/docs/stable/generated/torch.set_float32_matmul_precision.html#torch.set_float32_matmul_precision
-Restoring states from the checkpoint path at Experiments/EnglishConsonants/EnglishNLMs/masked-consonants-wikitext-chars/WordTokenizer/checkpoints/epoch=24-val_loss=4.631-step=18550-1.0.ckpt
+Restoring states from the checkpoint path at Experiments/EnglishConsonants/EnglishNLMs/masked-consonants-wikitext-chars/WordTokenizer/RNN/checkpoints/epoch=48-val_loss
+=4.637-step=36358-1.0.ckpt
 LOCAL_RANK: 0 - CUDA_VISIBLE_DEVICES: [0,1]
-Loaded model weights from the checkpoint at Experiments/EnglishConsonants/EnglishNLMs/masked-consonants-wikitext-chars/WordTokenizer/checkpoints/epoch=24-val_loss=4.631-step=18550-1.0.ckpt
+Loaded model weights from the checkpoint at Experiments/EnglishConsonants/EnglishNLMs/masked-consonants-wikitext-chars/WordTokenizer/RNN/checkpoints/epoch=48-val_loss=
+4.637-step=36358-1.0.ckpt
+Traceback (most recent call last):
+  File "/usr/lib/python3.10/multiprocessing/util.py", line 300, in _run_finalizers
+    finalizer()
+  File "/usr/lib/python3.10/multiprocessing/util.py", line 224, in __call__
+    res = self._callback(*self._args, **self._kwargs)
+  File "/usr/lib/python3.10/multiprocessing/util.py", line 133, in _remove_temp_dir
+    rmtree(tempdir)
+  File "/usr/lib/python3.10/shutil.py", line 731, in rmtree
+    onerror(os.rmdir, path, sys.exc_info())
+  File "/usr/lib/python3.10/shutil.py", line 729, in rmtree
+    os.rmdir(path)
+OSError: [Errno 39] Directory not empty: '/tmp/pymp-ibscwqjm'
 ┏━━━━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
 ┃        Test metric        ┃       DataLoader 0        ┃       DataLoader 1        ┃       DataLoader 2        ┃
 ┡━━━━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━━━━━┩
-│         test_loss         │    3.5345423221588135     │     4.631232261657715     │     4.46320104598999      │
-│         test_ppl          │     34.5352668762207      │    105.93453216552734     │     95.7870864868164      │
+│         test_loss         │     3.684267044067383     │     4.636537551879883     │     4.579355716705322     │
+│         test_ppl          │     40.25412368774414     │    106.08110046386719     │    103.59971618652344     │
 └───────────────────────────┴───────────────────────────┴───────────────────────────┴───────────────────────────┘
-Testing ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 90/90 0:00:04 • 0:00:00 20.19it/s
-[{'test_ppl/dataloader_idx_0': 34.5352668762207, 'test_loss/dataloader_idx_0': 3.5345423221588135}, {'test_ppl/dataloader_idx_1': 105.93453216552734, 'test_loss/dataloader_idx_1': 4.63123226
-1657715}, {'test_ppl/dataloader_idx_2': 95.7870864868164, 'test_loss/dataloader_idx_2': 4.46320104598999}]
+Testing ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 90/90 0:00:03 • 0:00:00 24.70it/s
+[{'test_ppl/dataloader_idx_0': 40.25412368774414, 'test_loss/dataloader_idx_0': 3.684267044067383}, {'test_ppl/dataloader_idx_1': 106.08110046386719, 'test_loss/dataloader_idx_1': 4.63653755
+1879883}, {'test_ppl/dataloader_idx_2': 103.59971618652344, 'test_loss/dataloader_idx_2': 4.579355716705322}]
 Training OOVs rate: 0.00
         Validation OOVs rate: 0.00
         Test OOVs rate: 0.00
-Training Time: 3379.50 seconds
+Training Time: 4376.83 seconds
 
