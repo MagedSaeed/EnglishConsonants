@@ -1,5 +1,5 @@
-(english-consonants-venv):~/Experiments/EnglishConsonants$ python english_consonants/experiments/language_modelling/run_experiment.py --gpu_devices=1 --vocab_coverag
-e=1 --batch_size=32
+(english-consonants-venv):~/Experiments/EnglishConsonants$
+(english-consonants-venv):~/Experiments/EnglishConsonants$ python english_consonants/experiments/language_modelling/run_experiment.py --gpu_devices=1 --vocab_coverage=1 --batch_size=32
 Found cached dataset wikitext (.cache/huggingface/datasets/wikitext/wikitext-2-v1/1.0.0/a241db52902eaf2c6aa732210bead40c090019a499ceb13bcbfa3f8ab646a126)
 100%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 3/3 [00:00<00:00, 1429.71it/s]
 Loading cached processed dataset at .cache/huggingface/datasets/wikitext/wikitext-2-v1/1.0.0/a241db52902eaf2c6aa732210bead40c090019a499ceb13bcbfa3f8ab646a126/cache-1fd
@@ -119,7 +119,8 @@ precision for performance. For more details, read https://pytorch.org/docs/stabl
 Restoring states from the checkpoint path at Experiments/EnglishConsonants/EnglishNLMs/all-wikitext-chars/WordTokenizer/checkpoints/epoch=23-val_loss=4.620-step=17808-
 1.0.ckpt
 LOCAL_RANK: 0 - CUDA_VISIBLE_DEVICES: [0,1]
-Loaded model weights from the checkpoint at Experiments/EnglishConsonants/EnglishNLMs/all-wikitext-chars/WordTokenizer/checkpoints/epoch=23-val_loss=4.620-step=17808-1.0.ckpt
+Loaded model weights from the checkpoint at Experiments/EnglishConsonants/EnglishNLMs/all-wikitext-chars/WordTokenizer/checkpoints/epoch=23-val_loss=4.620-step=17808-1
+.0.ckpt
 Experiments/english-consonants-venv/lib/python3.10/site-packages/pytorch_lightning/trainer/connectors/data_connector.py:478: PossibleUserWarning: Your `test_dataloader
 `'s sampler has shuffling enabled, it is strongly recommended that you turn shuffling off for val/test dataloaders.
   rank_zero_warn(
@@ -364,9 +365,11 @@ Testing ━━━━━━━━━━━━━━━━━━━━━━━━
 test results for dataloaders train,val,test as index 0,1, and 2 accordingly
 You are using a CUDA device ('NVIDIA RTX A4500') that has Tensor Cores. To properly utilize them, you should set `torch.set_float32_matmul_precision('medium' | 'high')` which will trade-off
 precision for performance. For more details, read https://pytorch.org/docs/stable/generated/torch.set_float32_matmul_precision.html#torch.set_float32_matmul_precision
-Restoring states from the checkpoint path at Experiments/EnglishConsonants/EnglishNLMs/masked-consonants-wikitext-chars/WordTokenizer/checkpoints/epoch=24-val_loss=4.631-step=18550-1.0.ckpt
+Restoring states from the checkpoint path at Experiments/EnglishConsonants/EnglishNLMs/masked-consonants-wikitext-chars/WordTokenizer/checkpoints/epoch=24-val_loss=4.6
+31-step=18550-1.0.ckpt
 LOCAL_RANK: 0 - CUDA_VISIBLE_DEVICES: [0,1]
-Loaded model weights from the checkpoint at Experiments/EnglishConsonants/EnglishNLMs/masked-consonants-wikitext-chars/WordTokenizer/checkpoints/epoch=24-val_loss=4.631-step=18550-1.0.ckpt
+Loaded model weights from the checkpoint at Experiments/EnglishConsonants/EnglishNLMs/masked-consonants-wikitext-chars/WordTokenizer/checkpoints/epoch=24-val_loss=4.63
+1-step=18550-1.0.ckpt
 ┏━━━━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
 ┃        Test metric        ┃       DataLoader 0        ┃       DataLoader 1        ┃       DataLoader 2        ┃
 ┡━━━━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━━━━━┩

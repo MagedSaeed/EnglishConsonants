@@ -1,12 +1,16 @@
-(english-consonants-venv):~/Experiments/EnglishConsonants$ python english_consonants/experiments/language_modelling/run_experiment.py --gpu_devices=1 --vocab_coverag
+(dotless-arabic) majed_alshaibani@jrcai14:~/Experiments/EnglishConsonants$ deactivate
+majed_alshaibani@jrcai14:~/Experiments/EnglishConsonants$
+majed_alshaibani@jrcai14:~/Experiments/EnglishConsonants$ source ../english-consonants-venv/bin/activate
+(english-consonants-venv) majed_alshaibani@jrcai14:~/Experiments/EnglishConsonants$
+(english-consonants-venv) majed_alshaibani@jrcai14:~/Experiments/EnglishConsonants$ python english_consonants/experiments/language_modelling/run_experiment.py --gpu_devices=1 --vocab_coverag
 e=1 --batch_size=32
-Found cached dataset wikitext (.cache/huggingface/datasets/wikitext/wikitext-2-v1/1.0.0/a241db52902eaf2c6aa732210bead40c090019a499ceb13bcbfa3f8ab646a126)
+Found cached dataset wikitext (/home/majed_alshaibani/.cache/huggingface/datasets/wikitext/wikitext-2-v1/1.0.0/a241db52902eaf2c6aa732210bead40c090019a499ceb13bcbfa3f8ab646a126)
 100%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 3/3 [00:00<00:00, 1429.71it/s]
-Loading cached processed dataset at .cache/huggingface/datasets/wikitext/wikitext-2-v1/1.0.0/a241db52902eaf2c6aa732210bead40c090019a499ceb13bcbfa3f8ab646a126/cache-1fd
+Loading cached processed dataset at /home/majed_alshaibani/.cache/huggingface/datasets/wikitext/wikitext-2-v1/1.0.0/a241db52902eaf2c6aa732210bead40c090019a499ceb13bcbfa3f8ab646a126/cache-1fd
 f7473581b0bfb.arrow
-Loading cached processed dataset at .cache/huggingface/datasets/wikitext/wikitext-2-v1/1.0.0/a241db52902eaf2c6aa732210bead40c090019a499ceb13bcbfa3f8ab646a126/cache-fe8
+Loading cached processed dataset at /home/majed_alshaibani/.cache/huggingface/datasets/wikitext/wikitext-2-v1/1.0.0/a241db52902eaf2c6aa732210bead40c090019a499ceb13bcbfa3f8ab646a126/cache-fe8
 2178e12600f83.arrow
-Loading cached processed dataset at .cache/huggingface/datasets/wikitext/wikitext-2-v1/1.0.0/a241db52902eaf2c6aa732210bead40c090019a499ceb13bcbfa3f8ab646a126/cache-61e
+Loading cached processed dataset at /home/majed_alshaibani/.cache/huggingface/datasets/wikitext/wikitext-2-v1/1.0.0/a241db52902eaf2c6aa732210bead40c090019a499ceb13bcbfa3f8ab646a126/cache-61e
 ce7f799b57ae9.arrow
 100%|███████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 36718/36718 [00:00<00:00, 146849.03it/s]
 100%|████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 36718/36718 [00:00<00:00, 61876.70it/s]
@@ -79,7 +83,8 @@ LOCAL_RANK: 0 - CUDA_VISIBLE_DEVICES: [0,1]
 Validation ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 76/76 0:00:06 • 0:00:00 18.60it/s
 You are using a CUDA device ('NVIDIA RTX A4500') that has Tensor Cores. To properly utilize them, you should set `torch.set_float32_matmul_precision('medium' | 'high')` which will trade-off
 precision for performance. For more details, read https://pytorch.org/docs/stable/generated/torch.set_float32_matmul_precision.html#torch.set_float32_matmul_precision
-Experiments/english-consonants-venv/lib/python3.10/site-packages/pytorch_lightning/callbacks/model_checkpoint.py:612: UserWarning: Checkpoint directory Experiments/EnglishConsonants/EnglishNLMs/all-wikitext-chars/WordTokenizer/checkpoints exists and is not empty.
+/home/majed_alshaibani/Experiments/english-consonants-venv/lib/python3.10/site-packages/pytorch_lightning/callbacks/model_checkpoint.py:612: UserWarning: Checkpoint directory /home/majed_als
+haibani/Experiments/EnglishConsonants/EnglishNLMs/all-wikitext-chars/WordTokenizer/checkpoints exists and is not empty.
   rank_zero_warn(f"Checkpoint directory {dirpath} exists and is not empty.")
 LOCAL_RANK: 0 - CUDA_VISIBLE_DEVICES: [0,1]
 ┏━━━┳━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━┓
@@ -116,11 +121,12 @@ Testing ━━━━━━━━━━━━━━━━━━━━━━━━
 test results for dataloaders train,val,test as index 0,1, and 2 accordingly
 You are using a CUDA device ('NVIDIA RTX A4500') that has Tensor Cores. To properly utilize them, you should set `torch.set_float32_matmul_precision('medium' | 'high')` which will trade-off
 precision for performance. For more details, read https://pytorch.org/docs/stable/generated/torch.set_float32_matmul_precision.html#torch.set_float32_matmul_precision
-Restoring states from the checkpoint path at Experiments/EnglishConsonants/EnglishNLMs/all-wikitext-chars/WordTokenizer/checkpoints/epoch=23-val_loss=4.620-step=17808-
+Restoring states from the checkpoint path at /home/majed_alshaibani/Experiments/EnglishConsonants/EnglishNLMs/all-wikitext-chars/WordTokenizer/checkpoints/epoch=23-val_loss=4.620-step=17808-
 1.0.ckpt
 LOCAL_RANK: 0 - CUDA_VISIBLE_DEVICES: [0,1]
-Loaded model weights from the checkpoint at Experiments/EnglishConsonants/EnglishNLMs/all-wikitext-chars/WordTokenizer/checkpoints/epoch=23-val_loss=4.620-step=17808-1.0.ckpt
-Experiments/english-consonants-venv/lib/python3.10/site-packages/pytorch_lightning/trainer/connectors/data_connector.py:478: PossibleUserWarning: Your `test_dataloader
+Loaded model weights from the checkpoint at /home/majed_alshaibani/Experiments/EnglishConsonants/EnglishNLMs/all-wikitext-chars/WordTokenizer/checkpoints/epoch=23-val_loss=4.620-step=17808-1
+.0.ckpt
+/home/majed_alshaibani/Experiments/english-consonants-venv/lib/python3.10/site-packages/pytorch_lightning/trainer/connectors/data_connector.py:478: PossibleUserWarning: Your `test_dataloader
 `'s sampler has shuffling enabled, it is strongly recommended that you turn shuffling off for val/test dataloaders.
   rank_zero_warn(
 ┏━━━━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
@@ -240,9 +246,11 @@ Testing ━━━━━━━━━━━━━━━━━━━━━━━━
 test results for dataloaders train,val,test as index 0,1, and 2 accordingly
 You are using a CUDA device ('NVIDIA RTX A4500') that has Tensor Cores. To properly utilize them, you should set `torch.set_float32_matmul_precision('medium' | 'high')` which will trade-off
 precision for performance. For more details, read https://pytorch.org/docs/stable/generated/torch.set_float32_matmul_precision.html#torch.set_float32_matmul_precision
-Restoring states from the checkpoint path at Experiments/EnglishConsonants/EnglishNLMs/consonants-wikitext-chars/WordTokenizer/checkpoints/epoch=31-val_loss=4.628-step=23373-1.0.ckpt
+Restoring states from the checkpoint path at /home/majed_alshaibani/Experiments/EnglishConsonants/EnglishNLMs/consonants-wikitext-chars/WordTokenizer/checkpoints/epoch=31-val_loss=4.628-step
+=23373-1.0.ckpt
 LOCAL_RANK: 0 - CUDA_VISIBLE_DEVICES: [0,1]
-Loaded model weights from the checkpoint at Experiments/EnglishConsonants/EnglishNLMs/consonants-wikitext-chars/WordTokenizer/checkpoints/epoch=31-val_loss=4.628-step=23373-1.0.ckpt
+Loaded model weights from the checkpoint at /home/majed_alshaibani/Experiments/EnglishConsonants/EnglishNLMs/consonants-wikitext-chars/WordTokenizer/checkpoints/epoch=31-val_loss=4.628-step=
+23373-1.0.ckpt
 ┏━━━━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
 ┃        Test metric        ┃       DataLoader 0        ┃       DataLoader 1        ┃       DataLoader 2        ┃
 ┡━━━━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━━━━━┩
@@ -364,9 +372,11 @@ Testing ━━━━━━━━━━━━━━━━━━━━━━━━
 test results for dataloaders train,val,test as index 0,1, and 2 accordingly
 You are using a CUDA device ('NVIDIA RTX A4500') that has Tensor Cores. To properly utilize them, you should set `torch.set_float32_matmul_precision('medium' | 'high')` which will trade-off
 precision for performance. For more details, read https://pytorch.org/docs/stable/generated/torch.set_float32_matmul_precision.html#torch.set_float32_matmul_precision
-Restoring states from the checkpoint path at Experiments/EnglishConsonants/EnglishNLMs/masked-consonants-wikitext-chars/WordTokenizer/checkpoints/epoch=24-val_loss=4.631-step=18550-1.0.ckpt
+Restoring states from the checkpoint path at /home/majed_alshaibani/Experiments/EnglishConsonants/EnglishNLMs/masked-consonants-wikitext-chars/WordTokenizer/checkpoints/epoch=24-val_loss=4.6
+31-step=18550-1.0.ckpt
 LOCAL_RANK: 0 - CUDA_VISIBLE_DEVICES: [0,1]
-Loaded model weights from the checkpoint at Experiments/EnglishConsonants/EnglishNLMs/masked-consonants-wikitext-chars/WordTokenizer/checkpoints/epoch=24-val_loss=4.631-step=18550-1.0.ckpt
+Loaded model weights from the checkpoint at /home/majed_alshaibani/Experiments/EnglishConsonants/EnglishNLMs/masked-consonants-wikitext-chars/WordTokenizer/checkpoints/epoch=24-val_loss=4.63
+1-step=18550-1.0.ckpt
 ┏━━━━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
 ┃        Test metric        ┃       DataLoader 0        ┃       DataLoader 1        ┃       DataLoader 2        ┃
 ┡━━━━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━━━━━┩
@@ -380,4 +390,5 @@ Training OOVs rate: 0.00
         Validation OOVs rate: 0.00
         Test OOVs rate: 0.00
 Training Time: 3379.50 seconds
+(english-consonants-venv) majed_alshaibani@jrcai14:~/Experiments/EnglishConsonants$
 
